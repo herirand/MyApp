@@ -2,10 +2,14 @@
 	"name": "my-app",
 	"version": "0.1.0",
 	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"scripts": {
-		"dev": "next dev",
-		"dev:web": "next dev",
-		"dev:api": "npm run dev --workspace=app/api",
+		"dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+		"dev:web": "npm run dev --workspaces=apps/web",
+		"dev:api": "npm run dev --workspaces=apps/api",
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint"
@@ -14,6 +18,7 @@
 		"@fastify/cors": "^11.2.0",
 		"@fastify/swagger": "^9.7.0",
 		"@fastify/swagger-ui": "^5.2.5",
+		"@prisma/client": "^5.22.0",
 		"fastify": "^5.8.4",
 		"next": "16.2.1",
 		"react": "19.2.4",
@@ -24,9 +29,10 @@
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"concurrently": "^8.0.0",
 		"eslint": "^9",
 		"eslint-config-next": "16.2.1",
-		"prisma": "^7.5.0",
+		"prisma": "^5.22.0",
 		"tailwindcss": "^4",
 		"typescript": "^5"
 	}

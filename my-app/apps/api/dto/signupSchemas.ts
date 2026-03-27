@@ -7,7 +7,7 @@ export const signupInputSchema = {
 			required: ['email', 'username', "id", 'password', 'confirmPassword'],
 			properties: {
 				email: { type: 'string', format: 'email' },
-				username: { type: 'string', minLength: 3, MaxLength: 20, pattern: '^[a-zA-Z0-9_]+$' },
+				username: { type: 'string', minLength: 3, pattern: '^[a-zA-Z0-9_]+$' },
 				password: { type: 'string', minLength: 8 },
 				confirmPassword: { type: 'string' },
 				id: { type: 'string' },

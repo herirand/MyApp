@@ -1,0 +1,16 @@
+{
+	"name": "@myapp/db",
+	"main": "./index.ts",
+	"scripts": {
+		"dev": "echo 'db ready'"
+	},
+	"exports": {
+		".": "./index.ts"
+	},
+	"dependencies": {
+		"@prisma/client": "^5.22.0"
+	},
+	"devDependencies": {
+		"prisma": "^5.22.0"
+	}
+}

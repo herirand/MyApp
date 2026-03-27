@@ -1,0 +1,20 @@
+{
+	"name": "@myapp/api",
+	"scripts": {
+		"dev": "tsx watch server.ts"
+	},
+	"dependencies": {
+		"@fastify/cors": "^10.0.0",
+		"@fastify/swagger": "^9.7.0",
+		"@fastify/swagger-ui": "^5.2.5",
+		"@myapp/db": "*",
+		"fastify": "^5.0.0",
+		"mnemonist": "^0.40.0",
+		"zod": "^3.0.0"
+	},
+	"devDependencies": {
+		"dotenv": "^17.3.1",
+		"tsx": "^4.0.0",
+		"typescript": "^5.0.0"
+	}
+}
