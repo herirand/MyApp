@@ -5,6 +5,8 @@ import fastifySwaggerUi from "@fastify/swagger-ui"
 import fastifyCors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
 import authRoutes from "./routes/authRoutes";
+import fastifyJwt from "@fastify/jwt";
+import transactionRoutes from "./routes/transactionRoutes";
 
 dotenv.config();
 
@@ -18,6 +20,10 @@ app.register(fastifyCors, {
 	credentials: true,
 	methods: ["GET", "POST", "DELETE", "PUT"],
 });
+
+app.register(fastifyJwt, {
+	secret: "fastifyjwtpass"
+})
 
 //swagger config
 app.register(fastifySwagger, {
@@ -41,6 +47,7 @@ app.register(fastifyStatic, {
 });
 
 app.register(authRoutes, { prefix: '/auth' });
+app.register(transactionRoutes);
 
 const start = async () => {
 	try {

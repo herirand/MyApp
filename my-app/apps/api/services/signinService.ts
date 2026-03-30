@@ -1,5 +1,6 @@
 import { prisma } from "@myapp/db";
 import argon2 from "argon2";
+import fastifyJwt from "@fastify/jwt";
 
 async function signinService(request, reply) {
 	const { email, password } = request.body as {
@@ -32,8 +33,16 @@ async function signinService(request, reply) {
 		})
 	}
 
+	const token = await this.jwt.sign({
+		id: existingUser.id,
+		role: existingUser.role
+	})
+
+	console.log(`token: ${token}`);
+
 	return reply.code(201).send({
 		success: true,
+		token: token,
 		message: "connexion success"
 	})
 }
