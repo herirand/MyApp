@@ -1,22 +1,40 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-    provider = "prisma-client-js"
-    // output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model user {
-    id       Int    @id @default(autoincrement())
-    email    String @unique
-    username String
-    password String
-    userId   String @unique
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  username    String
+  password    String
+  userId      String        @unique
+  role        Role          @default(STUDENT)
+  createdAt   DateTime      @default(now())
+  transaction Transaction[] @relation("StudentTransactions")
+}
+
+model Transaction {
+  id          Int               @id @default(autoincrement())
+  amount      Float
+  description String
+  status      TransactionStatus @default(PENDING)
+  createdAt   DateTime          @default(now())
+  studentId   Int
+  student     User              @relation("StudentTransactions", fields: [studentId], references: [id])
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
 }
