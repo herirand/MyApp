@@ -39,6 +39,9 @@ async function signupService(request, reply) {
 	const user = await prisma.user.create({
 		data: {
 			email, username, userId: id, password: pass
+		},
+		select: {
+			email: true, username: true, role: true
 		}
 	})
 
