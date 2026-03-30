@@ -30,3 +30,30 @@ export const signupInputSchema = {
 		}
 	}
 };
+
+export const signinInputSchema = {
+	schema: {
+		body: {
+			type: 'object',
+			required: ['email', 'password'],
+			properties: {
+				email: { type: 'string' },
+				password: { type: 'string' },
+			}
+		},
+		response: {
+			201: {
+				type: 'object',
+				properties: {
+					message: { type: 'string' },
+				}
+			},
+			500: {
+				type: 'object',
+				properties: {
+					error: { type: 'string' },
+				}
+			}
+		}
+	}
+}
