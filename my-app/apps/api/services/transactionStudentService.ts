@@ -9,6 +9,7 @@ type TokenPayload = {
 
 async function transactionStudentService(request: FastifyRequest, reply: FastifyReply) {
 	try {
+		console.log(`token recu student : ${request.headers}`);
 		const decodedToken = await request.jwtVerify<TokenPayload>();
 
 		const mytransactions = await prisma.transaction.findMany({
@@ -20,6 +21,7 @@ async function transactionStudentService(request: FastifyRequest, reply: Fastify
 		return reply.send(mytransactions);
 
 	} catch (error) {
+		console.log(`error: ${error}`);
 		return reply.code(401).send({
 			success: false,
 			error: "token invalide",

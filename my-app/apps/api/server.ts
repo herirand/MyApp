@@ -34,7 +34,16 @@ app.register(fastifySwagger, {
 			version: '1.0.0',
 		},
 		host: 'localhost:3001',
-		schemes: ['http']
+		schemes: ['http'],
+		securityDefinitions: {
+			bearerAuth: {
+				type: 'apiKey',
+				name: 'Authorization',
+				in: 'header',
+				description: 'Format: Bearer <token>'
+			}
+		},
+		security: [{ bearerAuth: [] }]
 	}
 });
 
@@ -42,9 +51,9 @@ app.register(fastifySwaggerUi, {
 	routePrefix: '/api-docs'
 });
 
-app.register(fastifyStatic, {
-	root: '/'
-});
+// app.register(fastifyStatic, {
+// 	root: '/'
+// });
 
 app.register(authRoutes, { prefix: '/auth' });
 app.register(transactionRoutes);

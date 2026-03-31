@@ -8,6 +8,7 @@ type TokenPayload = {
 
 async function transactionAdminService(request: FastifyRequest, reply: FastifyReply) {
 	try {
+		console.log(`token recu Admin : ${request.headers}`);
 		const decodedToken = await request.jwtVerify<TokenPayload>();
 
 		if (decodedToken.role !== 'ADMIN') {
