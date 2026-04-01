@@ -38,6 +38,7 @@ export const transactionAdminDto = {
 			required: ['studentId', 'amount', 'description'],
 			properties: {
 				studentId: { type: 'number' },
+				username: { type: 'string' },
 				amount: { type: 'number' },
 				description: { type: 'string' },
 			}

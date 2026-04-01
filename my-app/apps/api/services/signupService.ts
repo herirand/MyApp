@@ -1,8 +1,9 @@
 import { prisma } from "@myapp/db"
 import { passWordHash } from "../utils/utils";
-import fastifyJwt from "@fastify/jwt";
+import { FastifyRequest, FastifyReply } from "fastify";
+// import fastifyJwt from "@fastify/jwt";
 
-async function signupService(request, reply) {
+async function signupService(request: FastifyRequest, reply: FastifyReply) {
 	const { email, username, id, password, confirmPassword } = request.body as {
 		email: string,
 		username: string,

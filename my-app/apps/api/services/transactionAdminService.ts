@@ -15,17 +15,31 @@ async function transactionAdminService(request: FastifyRequest, reply: FastifyRe
 			return reply.status(403).send({ error: "admin only" });
 		}
 
-		const { amount, description, studentId } = request.body as any;
+		console.log(`request: ${request.body}`);
+		const { amount, description, username } = request.body as any;
+
+		const existingUser = await prisma.user.findFirst({
+			where: {
+				username
+			}
+		})
+
+		if (!existingUser) {
+			return reply.status(401).send({
+				success: false,
+				error: "Veuillez verifier le ID de l'utilisateur"
+			})
+		}
 
 		const newTransaction = await prisma.transaction.create({
-			data: { amount, description, studentId }
+			data: { amount, description, studentId: existingUser.id, username }
 		});
 
 		return reply.send(newTransaction);
 	} catch (error) {
 		return reply.code(401).send({
 			success: false,
-			error: "token invalide",
+			error: error ?? "token invalide",
 		});
 	}
 }

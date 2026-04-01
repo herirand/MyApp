@@ -1,40 +1,41 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  email       String        @unique
-  username    String
-  password    String
-  userId      String        @unique
-  role        Role          @default(STUDENT)
-  createdAt   DateTime      @default(now())
-  transaction Transaction[] @relation("StudentTransactions")
+    id          Int           @id @default(autoincrement())
+    email       String        @unique
+    username    String
+    password    String
+    userId      String        @unique
+    role        Role          @default(STUDENT)
+    createdAt   DateTime      @default(now())
+    transaction Transaction[] @relation("StudentTransactions")
 }
 
 model Transaction {
-  id          Int               @id @default(autoincrement())
-  amount      Float
-  description String
-  status      TransactionStatus @default(PENDING)
-  createdAt   DateTime          @default(now())
-  studentId   Int
-  student     User              @relation("StudentTransactions", fields: [studentId], references: [id])
+    id          Int               @id @default(autoincrement())
+    username    String
+    amount      Float
+    description String
+    status      TransactionStatus @default(PENDING)
+    createdAt   DateTime          @default(now())
+    studentId   Int
+    student     User              @relation("StudentTransactions", fields: [studentId], references: [id])
 }
 
 enum Role {
-  STUDENT
-  ADMIN
+    STUDENT
+    ADMIN
 }
 
 enum TransactionStatus {
-  PENDING
-  CONFIRMED
-  REJECTED
+    PENDING
+    CONFIRMED
+    REJECTED
 }
