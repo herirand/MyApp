@@ -45,6 +45,9 @@ export const signinInputSchema = {
 			201: {
 				type: 'object',
 				properties: {
+					success: { type: 'boolean' },
+					token: { type: 'string' },
+					role: { type: 'string' },
 					message: { type: 'string' },
 				}
 			},

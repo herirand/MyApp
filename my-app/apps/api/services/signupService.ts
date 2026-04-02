@@ -1,7 +1,6 @@
 import { prisma } from "@myapp/db"
 import { passWordHash } from "../utils/utils";
 import { FastifyRequest, FastifyReply } from "fastify";
-// import fastifyJwt from "@fastify/jwt";
 
 async function signupService(request: FastifyRequest, reply: FastifyReply) {
 	const { email, username, id, password, confirmPassword } = request.body as {
@@ -11,7 +10,6 @@ async function signupService(request: FastifyRequest, reply: FastifyReply) {
 		password: string,
 		confirmPassword: string,
 	};
-	console.log(`email: ${email} | username: ${username} | id: ${id} | password: ${password} | confirmPassword: ${confirmPassword}`);
 
 	if (password != confirmPassword) {
 		return reply.code(400).send({
@@ -30,7 +28,6 @@ async function signupService(request: FastifyRequest, reply: FastifyReply) {
 	});
 
 	if (existingUser) {
-		console.log("email ou id deja utiliser");
 		return reply.code(409).send({
 			success: false,
 			error: "email ou id deja utiliser",

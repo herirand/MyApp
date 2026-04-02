@@ -7,12 +7,12 @@
 		"packages/*"
 	],
 	"scripts": {
-		"dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
-		"dev:web": "npm run dev --workspaces=apps/web",
-		"dev:api": "npm run dev --workspaces=apps/api",
-		"build": "next build",
-		"start": "next start",
-		"lint": "eslint"
+		"dev": "concurrently \"npm:dev:web\" \"npm:dev:api\"",
+		"dev:web": "npm run dev -w @myapp/web",
+		"dev:api": "npm run dev -w @myapp/api",
+		"build": "npm run build -w @myapp/web",
+		"start": "npm run start -w @myapp/web",
+		"lint": "npm run lint -w @myapp/web"
 	},
 	"dependencies": {
 		"@fastify/cors": "^11.2.0",

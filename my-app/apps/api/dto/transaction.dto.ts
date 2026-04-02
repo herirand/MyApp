@@ -35,9 +35,8 @@ export const transactionAdminDto = {
 		security: [{ bearerAuth: [] }],
 		body: {
 			type: 'object',
-			required: ['studentId', 'amount', 'description'],
+			required: ['username', 'amount', 'description'],
 			properties: {
-				studentId: { type: 'number' },
 				username: { type: 'string' },
 				amount: { type: 'number' },
 				description: { type: 'string' },

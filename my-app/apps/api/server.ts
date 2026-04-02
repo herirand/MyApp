@@ -60,12 +60,8 @@ app.register(transactionRoutes);
 
 const start = async () => {
 	try {
-		// const ports = process.env.PORT;
 		await app.listen({ port: 3001, host: '0.0.0.0' });
-		console.log(`app listening in port 3001`);
-
 	} catch (err) {
-		console.log(`error: ${err}`);
 		process.exit(1);
 	}
 }

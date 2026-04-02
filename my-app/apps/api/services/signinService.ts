@@ -1,13 +1,12 @@
 import { prisma } from "@myapp/db";
 import argon2 from "argon2";
-import fastifyJwt from "@fastify/jwt";
+import { FastifyRequest, FastifyReply } from "fastify";
 
-async function signinService(request, reply) {
+async function signinService(request: FastifyRequest, reply: FastifyReply) {
 	const { email, password } = request.body as {
 		email: string,
 		password: string,
 	};
-	console.log(`email or usename: ${email} | password: ${password}`);
 
 	const existingUser = await prisma.user.findFirst({
 		where: {
@@ -33,16 +32,15 @@ async function signinService(request, reply) {
 		})
 	}
 
-	const token = await this.jwt.sign({
+	const token = await request.server.jwt.sign({
 		id: existingUser.id,
 		role: existingUser.role
 	})
 
-	console.log(`token: ${token}`);
-
 	return reply.code(201).send({
 		success: true,
 		token: token,
+		role: existingUser.role,
 		message: "connexion success"
 	})
 }

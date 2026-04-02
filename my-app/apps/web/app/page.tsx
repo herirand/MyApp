@@ -1,42 +1,31 @@
-import { fetchFromAPI } from './lib/api';
+'use client';
 
-// Remplacez par le type réel retourné par votre backend
-interface MyData {
-	id: number;
-	name: string;
-	message: string;
-}
+import Link from 'next/link';
 
-export default async function HomePage() {
-	// Appel direct à votre backend !
-	// Si le backend n'est pas allumé, cela retournera une erreur.
-	// Pensez à gérer les erreurs avec un fichier error.tsx plus tard.
-	let data: MyData | null = null;
-	let error = null;
-
-	try {
-		// Remplacez '/api/hello' par une vraie route de votre backend
-		data = await fetchFromAPI('/api/hello', { cache: 'no-store' });
-	} catch (err) {
-		error = "Impossible de se connecter au backend.";
-	}
-
+export default function HomePage() {
 	return (
-		<div className="space-y-4">
-			<h1 className="text-3xl font-bold">Bienvenue sur le Frontend</h1>
-
-			<div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
-				<h2 className="text-xl font-semibold mb-2">Statut du Backend :</h2>
-				{error ? (
-					<p className="text-red-500">{error}</p>
-				) : (
-					<div>
-						<p className="text-green-600 font-medium">Connecté avec succès !</p>
-						<pre className="mt-2 bg-gray-200 dark:bg-gray-800 p-2 rounded text-sm">
-							{JSON.stringify(data, null, 2)}
-						</pre>
-					</div>
-				)}
+		<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+			<div className="text-center space-y-6 max-w-lg">
+				<h1 className="text-4xl font-bold text-indigo-900">
+					Gestion des Transactions
+				</h1>
+				<p className="text-lg text-gray-600">
+					Plateforme de gestion des transactions pour étudiants et administrateurs
+				</p>
+				<div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+					<Link 
+						href="/login"
+						className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+					>
+						Connexion
+					</Link>
+					<Link 
+						href="/signup"
+						className="px-6 py-3 bg-white text-indigo-600 border-2 border-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+					>
+						S&apos;inscrire
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

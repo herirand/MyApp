@@ -8,14 +8,12 @@ type TokenPayload = {
 
 async function transactionAdminService(request: FastifyRequest, reply: FastifyReply) {
 	try {
-		console.log(`token recu Admin : ${request.headers}`);
 		const decodedToken = await request.jwtVerify<TokenPayload>();
 
 		if (decodedToken.role !== 'ADMIN') {
 			return reply.status(403).send({ error: "admin only" });
 		}
 
-		console.log(`request: ${request.body}`);
 		const { amount, description, username } = request.body as any;
 
 		const existingUser = await prisma.user.findFirst({
