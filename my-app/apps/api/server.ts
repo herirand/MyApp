@@ -3,7 +3,7 @@ import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
 import fastifyCors from "@fastify/cors";
-import fastifyStatic from "@fastify/static";
+// import fastifyStatic from "@fastify/static";
 import authRoutes from "./routes/authRoutes";
 import fastifyJwt from "@fastify/jwt";
 import transactionRoutes from "./routes/transactionRoutes";
