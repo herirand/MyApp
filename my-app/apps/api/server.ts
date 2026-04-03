@@ -3,12 +3,13 @@ import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
 import fastifyCors from "@fastify/cors";
-// import fastifyStatic from "@fastify/static";
 import authRoutes from "./routes/authRoutes";
 import fastifyJwt from "@fastify/jwt";
 import transactionRoutes from "./routes/transactionRoutes";
 
 dotenv.config();
+
+const url = process.env.URL_FRONT;
 
 const app = Fastify({
 	logger: true,
@@ -16,7 +17,7 @@ const app = Fastify({
 
 //cors
 app.register(fastifyCors, {
-	origin: 'http://localhost:3000',
+	origin: url,
 	credentials: true,
 	methods: ["GET", "POST", "DELETE", "PUT"],
 });
@@ -33,7 +34,7 @@ app.register(fastifySwagger, {
 			description: 'project perso',
 			version: '1.0.0',
 		},
-		host: 'localhost:3001',
+		host: process.env.URL_SWAGGER,
 		schemes: ['http'],
 		securityDefinitions: {
 			bearerAuth: {
@@ -60,7 +61,8 @@ app.register(transactionRoutes);
 
 const start = async () => {
 	try {
-		await app.listen({ port: 3001, host: '0.0.0.0' });
+		const port = process.env.PORT;
+		await app.listen({ port: parseInt(port || '3001'), host: '0.0.0.0' });
 	} catch (err) {
 		process.exit(1);
 	}
