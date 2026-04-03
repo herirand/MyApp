@@ -6,8 +6,10 @@ import fastifyCors from "@fastify/cors";
 import authRoutes from "./routes/authRoutes";
 import fastifyJwt from "@fastify/jwt";
 import transactionRoutes from "./routes/transactionRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 dotenv.config();
+console.log(`URL_FRONT: ${process.env.URL_FRONT} | URL_SWAGGER: ${process.env.URL_SWAGGER} | port: ${process.env.PORT}`);
 
 const url = process.env.URL_FRONT;
 
@@ -17,7 +19,7 @@ const app = Fastify({
 
 //cors
 app.register(fastifyCors, {
-	origin: url,
+	origin: 'http://localhost:3000',
 	credentials: true,
 	methods: ["GET", "POST", "DELETE", "PUT"],
 });
@@ -34,7 +36,7 @@ app.register(fastifySwagger, {
 			description: 'project perso',
 			version: '1.0.0',
 		},
-		host: process.env.URL_SWAGGER,
+		host: 'http://localhost:3001',
 		schemes: ['http'],
 		securityDefinitions: {
 			bearerAuth: {
@@ -58,6 +60,7 @@ app.register(fastifySwaggerUi, {
 
 app.register(authRoutes, { prefix: '/auth' });
 app.register(transactionRoutes);
+app.register(adminRoutes);
 
 const start = async () => {
 	try {

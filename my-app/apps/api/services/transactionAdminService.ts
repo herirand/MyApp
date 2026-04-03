@@ -29,8 +29,29 @@ async function transactionAdminService(request: FastifyRequest, reply: FastifyRe
 			})
 		}
 
+		const newBalance = existingUser.balance + amount;
+
+		await prisma.user.update({
+			where: { id: existingUser.id },
+			data: { balance: newBalance }
+		});
+
+		const globalTotal = await prisma.global.findFirst();
+		const newTotal = (globalTotal?.total || 0) + amount;
+
+		await prisma.global.update({
+			where: { id: globalTotal?.id },
+			data: { total: newTotal }
+		});
+
 		const newTransaction = await prisma.transaction.create({
-			data: { amount, description, studentId: existingUser.id, username }
+			data: { 
+				amount, 
+				description, 
+				studentId: existingUser.id, 
+				username,
+				type: 'DEPOSIT'
+			}
 		});
 
 		return reply.send(newTransaction);
