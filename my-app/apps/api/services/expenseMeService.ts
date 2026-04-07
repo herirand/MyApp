@@ -10,9 +10,13 @@ async function expenseMeService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 		await request.jwtVerify<TokenPayload>();
 
-		const all = await prisma.expense.findMany();
+		const expenses = await prisma.expense.findMany({
+			orderBy: {
+				createdAt: 'desc',
+			},
+		});
 
-		return reply.code(200).send(all);
+		return reply.code(200).send(expenses);
 
 	} catch (error) {
 		return reply.status(401).send({

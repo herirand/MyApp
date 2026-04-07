@@ -37,7 +37,6 @@ export const expenseMeDto = {
 	schema: {
 		tags: ['expense'],
 		description: 'Recuperer toutes les transaction de depense',
-		security: [{ bearerAuth: [] }],
 		response: {
 			200: {
 				type: 'array',
@@ -51,7 +50,32 @@ export const expenseMeDto = {
 					}
 				}
 			},
-			400: {
+			500: {
+				type: 'object',
+				properties: {
+					error: { type: 'string' },
+				}
+			}
+		}
+	}
+}
+
+export const payDto = {
+	schema: {
+		tags: ['total des soldes'],
+		description: 'voir les soldes',
+		response: {
+			200: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						id: { type: 'number' },
+						total: { type: 'number' }
+					}
+				}
+			},
+			500: {
 				type: 'object',
 				properties: {
 					error: { type: 'string' },
