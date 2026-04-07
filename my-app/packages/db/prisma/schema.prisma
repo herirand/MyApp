@@ -14,6 +14,7 @@ model User {
     password    String
     userId      String        @unique
     role        Role          @default(STUDENT)
+    balance     Float         @default(0)
     createdAt   DateTime      @default(now())
     transaction Transaction[] @relation("StudentTransactions")
 }
@@ -21,12 +22,25 @@ model User {
 model Transaction {
     id          Int               @id @default(autoincrement())
     username    String
-    amount      Float
+    amount      Float             @default(0)
+    type        TransactionType
     description String
     status      TransactionStatus @default(PENDING)
     createdAt   DateTime          @default(now())
     studentId   Int
     student     User              @relation("StudentTransactions", fields: [studentId], references: [id])
+}
+
+model Expense {
+    id          Int      @id @default(autoincrement())
+    amount      Float
+    description String
+    createdAt   DateTime @default(now())
+}
+
+model Global {
+    id    Int   @id @default(autoincrement())
+    total Float @default(0)
 }
 
 enum Role {
@@ -38,4 +52,9 @@ enum TransactionStatus {
     PENDING
     CONFIRMED
     REJECTED
+}
+
+enum TransactionType {
+    DEPOSIT
+    EXPENSE
 }

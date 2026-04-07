@@ -32,10 +32,12 @@ async function signinService(request: FastifyRequest, reply: FastifyReply) {
 		})
 	}
 
-	const token = await request.server.jwt.sign({
+	const token = request.server.jwt.sign({
 		id: existingUser.id,
 		role: existingUser.role
 	})
+
+	console.log(`token: ${token}`);
 
 	return reply.code(201).send({
 		success: true,

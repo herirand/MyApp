@@ -4,33 +4,93 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+interface FormData {
+	email: string;
+	username: string;
+	id: string;
+	password: string;
+	confirmPassword: string;
+}
+
+interface ValidationErrors {
+	email?: string;
+	username?: string;
+	password?: string;
+	confirmPassword?: string;
+	submit?: string;
+}
+
 export default function SignupPage() {
 	const router = useRouter();
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<FormData>({
 		email: '',
 		username: '',
 		id: '',
 		password: '',
 		confirmPassword: '',
 	});
-	const [error, setError] = useState('');
+	const [errors, setErrors] = useState<ValidationErrors>({});
 	const [loading, setLoading] = useState(false);
+	const [focused, setFocused] = useState<string | null>(null);
+	const [showPassword, setShowPassword] = useState(false);
+
+	const validateField = (name: string, value: string): string | undefined => {
+		switch (name) {
+			case 'email':
+				if (!value) return 'Email requis';
+				if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Email invalide';
+				return undefined;
+			case 'username':
+				if (!value) return "Nom d'utilisateur requis";
+				if (value.length < 3) return 'Minimum 3 caractères';
+				if (!/^[a-zA-Z0-9_]+$/.test(value)) return 'Caractères alphanumériques uniquement';
+				return undefined;
+			case 'password':
+				if (!value) return 'Mot de passe requis';
+				if (value.length < 8) return 'Minimum 8 caractères';
+				return undefined;
+			case 'confirmPassword':
+				if (!value) return 'Confirmation requise';
+				if (value !== formData.password) return 'Les mots de passe ne correspondent pas';
+				return undefined;
+			default:
+				return undefined;
+		}
+	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
+		const { name, value } = e.target;
+		setFormData({ ...formData, [name]: value });
+		if (errors[name as keyof ValidationErrors]) {
+			setErrors({ ...errors, [name]: undefined });
+		}
+	};
+
+	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setFocused(null);
+		const error = validateField(name, value);
+		if (error) {
+			setErrors({ ...errors, [name]: error });
+		}
 	};
 
 	const handleSignup = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setError('');
+		
+		const newErrors: ValidationErrors = {};
+		let hasErrors = false;
+		
+		(['email', 'username', 'password', 'confirmPassword'] as const).forEach((field) => {
+			const error = validateField(field, formData[field]);
+			if (error) {
+				newErrors[field] = error;
+				hasErrors = true;
+			}
+		});
 
-		if (formData.password !== formData.confirmPassword) {
-			setError('Les mots de passe ne correspondent pas');
-			return;
-		}
-
-		if (formData.password.length < 8) {
-			setError('Le mot de passe doit contenir au moins 8 caractères');
+		if (hasErrors) {
+			setErrors(newErrors);
 			return;
 		}
 
@@ -59,97 +119,135 @@ export default function SignupPage() {
 			router.push('/login');
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la création du compte';
-			setError(errorMessage);
+			setErrors({ ...errors, submit: errorMessage });
 		} finally {
 			setLoading(false);
 		}
 	};
 
+	const inputFields = [
+		{ name: 'email', type: 'email', label: 'Email', placeholder: 'email@exemple.com', icon: 'M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207' },
+		{ name: 'username', type: 'text', label: "Nom d'utilisateur", placeholder: 'username', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+		{ name: 'id', type: 'text', label: 'ID Étudiant', placeholder: 'Votre ID', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2' },
+		{ name: 'password', type: showPassword ? 'text' : 'password', label: 'Mot de passe', placeholder: 'Minimum 8 caractères', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
+		{ name: 'confirmPassword', type: showPassword ? 'text' : 'password', label: 'Confirmer le mot de passe', placeholder: '••••••••', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
+	];
+
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-			<div className="w-full max-w-md">
-				<div className="bg-white rounded-2xl shadow-xl p-8">
-					<h2 className="text-3xl font-bold text-center text-indigo-900 mb-8">Créer un compte</h2>
-					<form onSubmit={handleSignup} className="space-y-5">
-						{error && (
-							<div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
-								{error}
+		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden py-8">
+			<div className="absolute inset-0" style={{
+				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)`,
+				backgroundSize: '30px 30px',
+			}} />
+
+			<div className="absolute top-20 right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl" />
+			<div className="absolute bottom-20 left-20 w-96 bg-indigo-500/20 rounded-full blur-3xl" />
+
+			<div className="relative z-10 w-full max-w-md px-4">
+				<div className="animate-fadeIn">
+					<Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 justify-center">
+						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+						</svg>
+						Retour à l'accueil
+					</Link>
+				</div>
+
+				<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl animate-fadeIn stagger-1">
+					<div className="text-center mb-8">
+						<div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+							<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+							</svg>
+						</div>
+						<h2 className="text-3xl font-bold text-white">Créer un compte</h2>
+						<p className="text-gray-400 mt-2">Rejoignez-nous ! Remplissez le formulaire ci-dessous</p>
+					</div>
+
+					<form onSubmit={handleSignup} className="space-y-4">
+						{errors.submit && (
+							<div className="p-4 bg-red-500/20 border border-red-500/50 text-red-200 rounded-xl text-sm flex items-center gap-3">
+								<svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+									<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+								</svg>
+								{errors.submit}
 							</div>
 						)}
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-							<input
-								type="email"
-								name="email"
-								required
-								value={formData.email}
-								onChange={handleChange}
-								className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-								placeholder="email@exemple.com"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Nom d&apos;utilisateur</label>
-							<input
-								type="text"
-								name="username"
-								required
-								minLength={3}
-								pattern="^[a-zA-Z0-9_]+$"
-								value={formData.username}
-								onChange={handleChange}
-								className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-								placeholder="username"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">ID Étudiant</label>
-							<input
-								type="text"
-								name="id"
-								required
-								value={formData.id}
-								onChange={handleChange}
-								className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-								placeholder="Votre ID"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
-							<input
-								type="password"
-								name="password"
-								required
-								minLength={8}
-								value={formData.password}
-								onChange={handleChange}
-								className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-								placeholder="Minimum 8 caractères"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
-							<input
-								type="password"
-								name="confirmPassword"
-								required
-								value={formData.confirmPassword}
-								onChange={handleChange}
-								className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-								placeholder="••••••••"
-							/>
-						</div>
+
+						{inputFields.map((field) => (
+							<div key={field.name} className="space-y-2">
+								<label className="block text-sm font-medium text-gray-300">{field.label}</label>
+								<div className={`relative transition-all duration-300 ${focused === field.name ? 'transform scale-[1.01]' : ''}`}>
+									<div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+										<svg className={`w-5 h-5 transition-colors ${focused === field.name ? 'text-pink-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={field.icon} />
+										</svg>
+									</div>
+									<input
+										type={field.type}
+										name={field.name}
+										required
+										value={formData[field.name as keyof FormData]}
+										onChange={handleChange}
+										onFocus={() => setFocused(field.name)}
+										onBlur={handleBlur}
+										className={`w-full pl-12 pr-12 py-4 bg-white/5 border rounded-xl text-white placeholder-gray-500 focus:outline-none transition-all ${
+											errors[field.name as keyof ValidationErrors] 
+												? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20' 
+												: 'border-white/10 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20'
+										}`}
+										placeholder={field.placeholder}
+									/>
+									{field.name === 'password' || field.name === 'confirmPassword' ? (
+										<button
+											type="button"
+											onClick={() => setShowPassword(!showPassword)}
+											className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-white transition-colors"
+										>
+											{showPassword ? (
+												<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+												</svg>
+											) : (
+												<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+												</svg>
+											)}
+										</button>
+									) : null}
+								</div>
+								{errors[field.name as keyof ValidationErrors] && (
+									<p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+										<svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+											<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+										</svg>
+										{errors[field.name as keyof ValidationErrors]}
+									</p>
+								)}
+							</div>
+						))}
+
 						<button 
 							type="submit" 
 							disabled={loading}
-							className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50"
+							className="w-full py-4 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl font-semibold hover:from-pink-500 hover:to-purple-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/25 mt-2"
 						>
-							{loading ? 'Création...' : "S&apos;inscrire"}
+							{loading ? (
+								<span className="flex items-center justify-center gap-2">
+									<svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+										<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+										<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+									</svg>
+									Création en cours...
+								</span>
+							) : "S'inscrire"}
 						</button>
 					</form>
-					<p className="text-center mt-6 text-gray-600">
+
+					<p className="text-center mt-6 text-gray-400">
 						Déjà un compte ?{' '}
-						<Link href="/login" className="text-indigo-600 hover:underline font-medium">
+						<Link href="/login" className="text-pink-400 hover:text-pink-300 font-medium transition-colors hover:underline">
 							Se connecter
 						</Link>
 					</p>
