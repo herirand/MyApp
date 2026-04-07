@@ -11,7 +11,7 @@ import adminRoutes from "./routes/adminRoutes";
 dotenv.config();
 console.log(`URL_FRONT: ${process.env.URL_FRONT} | URL_SWAGGER: ${process.env.URL_SWAGGER} | port: ${process.env.PORT}`);
 
-const url = process.env.URL_FRONT;
+// const url = process.env.URL_FRONT;
 
 const app = Fastify({
 	logger: true,
@@ -19,7 +19,7 @@ const app = Fastify({
 
 //cors
 app.register(fastifyCors, {
-	origin: 'http://localhost:3000',
+	origin: ['http://localhost:3000', 'http://localhost:3001'],
 	credentials: true,
 	methods: ["GET", "POST", "DELETE", "PUT"],
 });
@@ -36,7 +36,7 @@ app.register(fastifySwagger, {
 			description: 'project perso',
 			version: '1.0.0',
 		},
-		host: 'http://localhost:3001',
+		host: 'localhost:3001',
 		schemes: ['http'],
 		securityDefinitions: {
 			bearerAuth: {

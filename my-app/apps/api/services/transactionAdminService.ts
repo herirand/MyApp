@@ -29,28 +29,27 @@ async function transactionAdminService(request: FastifyRequest, reply: FastifyRe
 			})
 		}
 
-		const newBalance = existingUser.balance + amount;
-
 		await prisma.user.update({
 			where: { id: existingUser.id },
-			data: { balance: newBalance }
+			data: {
+				balance: { increment: Number(amount) }
+			},
 		});
 
-		const globalTotal = await prisma.global.findFirst();
-		const newTotal = (globalTotal?.total || 0) + amount;
-
-		await prisma.global.update({
-			where: { id: globalTotal?.id },
-			data: { total: newTotal }
+		await prisma.global.upsert({
+			where: { id: 1 },
+			update: { total: { increment: Number(amount) } },
+			create: { id: 1, total: Number(amount) },
 		});
 
 		const newTransaction = await prisma.transaction.create({
-			data: { 
-				amount, 
-				description, 
-				studentId: existingUser.id, 
+			data: {
+				amount,
+				description,
+				studentId: existingUser.id,
 				username,
-				type: 'DEPOSIT'
+				type: 'DEPOSIT',
+				status: 'CONFIRMED'
 			}
 		});
 

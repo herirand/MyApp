@@ -9,7 +9,7 @@ type TokenPayload = {
 
 async function expenseService(request: FastifyRequest, reply: FastifyReply) {
 	try {
-		const decodedToken = await request.jwtVerify<TokenPayload>()
+		const decodedToken = await request.jwtVerify<TokenPayload>();
 
 		if (decodedToken.role !== 'ADMIN') {
 			return reply.status(409).send({ error: "admin only" });
