@@ -11,11 +11,21 @@ interface Transaction {
 	createdAt: string;
 }
 
+interface Expense {
+	id: number;
+	amount: number;
+	description: string;
+	createdAt: string;
+}
+
 export default function DashboardPage() {
 	const router = useRouter();
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
+	const [expenses, setExpenses] = useState<Expense[]>([]);
+	const [activeTab, setActiveTab] = useState<'transactions' | 'expenses'>('transactions');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(true);
+	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -31,114 +41,294 @@ export default function DashboardPage() {
 			return;
 		}
 
-		const fetchTransactions = async () => {
-			try {
-				const response = await fetch('http://localhost:3001/transactions/me', {
+		fetchData(token);
+	}, [router]);
+
+	const fetchData = async (token: string) => {
+		try {
+			const [transRes, expenseRes] = await Promise.all([
+				fetch('http://localhost:3001/transactions/me', {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
 					}
-				});
+				}),
+				fetch('http://localhost:3001/expense/me', {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				})
+			]);
 
-				if (!response.ok) {
-					const errorData = await response.json();
-					throw new Error(errorData.error || 'Session expirée ou erreur');
-				}
-
-				const data = await response.json();
-				setTransactions(data);
-			} catch (err: unknown) {
-				const errorMessage = err instanceof Error ? err.message : 'Session expirée ou erreur';
-				setError(errorMessage);
-				localStorage.removeItem('token');
-				localStorage.removeItem('role');
-				router.push('/login');
-			} finally {
-				setLoading(false);
+			if (transRes.ok) {
+				const transData = await transRes.json();
+				setTransactions(transData);
 			}
-		};
 
-		fetchTransactions();
-	}, [router]);
+			if (expenseRes.ok) {
+				const expenseData = await expenseRes.json();
+				setExpenses(expenseData);
+			}
+		} catch (err: unknown) {
+			const errorMessage = err instanceof Error ? err.message : 'Erreur de chargement';
+			setError(errorMessage);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleRefresh = async () => {
+		setRefreshing(true);
+		const token = localStorage.getItem('token');
+		if (token) {
+			await fetchData(token);
+		}
+		setRefreshing(false);
+	};
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case 'CONFIRMED':
-				return 'bg-green-100 text-green-700';
+				return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
 			case 'REJECTED':
-				return 'bg-red-100 text-red-700';
+				return 'bg-red-500/20 text-red-400 border-red-500/30';
 			default:
-				return 'bg-yellow-100 text-yellow-700';
+				return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
 		}
 	};
 
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString('fr-FR', {
 			year: 'numeric',
-			month: 'long',
+			month: 'short',
 			day: 'numeric',
 			hour: '2-digit',
 			minute: '2-digit'
 		});
 	};
 
+	const totalIncome = transactions
+		.filter(t => t.status === 'CONFIRMED')
+		.reduce((sum, t) => sum + t.amount, 0);
+	
+	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center h-64">
-				<div className="text-gray-500">Chargement...</div>
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+				<div className="text-white flex flex-col items-center gap-4">
+					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+					<p>Chargement...</p>
+				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div>
-			<h2 className="text-2xl font-bold text-gray-800 mb-6">Mes Transactions</h2>
+		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+			<div className="absolute inset-0" style={{
+				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
+				backgroundSize: '40px 40px',
+			}} />
+			
+			<div className="relative max-w-6xl mx-auto">
+				<header className="flex justify-between items-center mb-8 animate-fadeIn">
+					<div>
+						<h1 className="text-3xl font-bold text-white">Tableau de bord</h1>
+						<p className="text-gray-400 mt-1">Gérez vos transactions et dépenses</p>
+					</div>
+					<button
+						onClick={handleRefresh}
+						disabled={refreshing}
+						className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all text-white hover:scale-105"
+					>
+						<svg className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+						</svg>
+					</button>
+				</header>
 
-			{error && (
-				<div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg mb-4">
-					{error}
-				</div>
-			)}
+				{error && (
+					<div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl flex items-center gap-3 animate-shake">
+						<svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+							<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+						</svg>
+						{error}
+					</div>
+				)}
 
-			{transactions.length === 0 ? (
-				<div className="text-center py-12">
-					<p className="text-gray-500 text-lg">Aucune transaction trouvée.</p>
-					<p className="text-gray-400 text-sm mt-2">Vos transactions apparaîtront ici.</p>
+				<div className="grid md:grid-cols-3 gap-6 mb-8">
+					<div className="bg-gradient-to-br from-emerald-500/20 to-green-500/10 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-1">
+						<div className="flex items-center gap-3 mb-2">
+							<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+								<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								</svg>
+							</div>
+							<span className="text-emerald-400 text-sm font-medium">Revenus</span>
+						</div>
+						<p className="text-3xl font-bold text-white">{totalIncome.toFixed(2)} €</p>
+						<p className="text-emerald-400/70 text-sm mt-1">{transactions.filter(t => t.status === 'CONFIRMED').length} transactions</p>
+					</div>
+
+					<div className="bg-gradient-to-br from-red-500/20 to-pink-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-2">
+						<div className="flex items-center gap-3 mb-2">
+							<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
+								<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+								</svg>
+							</div>
+							<span className="text-red-400 text-sm font-medium">Dépenses</span>
+						</div>
+						<p className="text-3xl font-bold text-white">{totalExpenses.toFixed(2)} €</p>
+						<p className="text-red-400/70 text-sm mt-1">{expenses.length} dépenses</p>
+					</div>
+
+					<div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/10 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-3">
+						<div className="flex items-center gap-3 mb-2">
+							<div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+								<svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+								</svg>
+							</div>
+							<span className="text-purple-400 text-sm font-medium">Solde</span>
+						</div>
+						<p className="text-3xl font-bold text-white">{(totalIncome - totalExpenses).toFixed(2)} €</p>
+						<p className="text-purple-400/70 text-sm mt-1">Net disponible</p>
+					</div>
 				</div>
-			) : (
-				<div className="overflow-x-auto">
-					<table className="w-full">
-						<thead>
-							<tr className="border-b">
-								<th className="text-left py-3 px-4 font-semibold text-gray-600">Date</th>
-								<th className="text-left py-3 px-4 font-semibold text-gray-600">Description</th>
-								<th className="text-right py-3 px-4 font-semibold text-gray-600">Montant</th>
-								<th className="text-center py-3 px-4 font-semibold text-gray-600">Statut</th>
-							</tr>
-						</thead>
-						<tbody>
-							{transactions.map((t) => (
-								<tr key={t.id} className="border-b hover:bg-gray-50">
-									<td className="py-3 px-4 text-gray-600">
-										{formatDate(t.createdAt)}
-									</td>
-									<td className="py-3 px-4 text-gray-800">
-										{t.description}
-									</td>
-									<td className="py-3 px-4 text-right font-bold text-indigo-600">
-										{t.amount.toFixed(2)} €
-									</td>
-									<td className="py-3 px-4 text-center">
-										<span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(t.status)}`}>
-											{t.status}
-										</span>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+
+				<div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden animate-fadeIn stagger-4">
+					<div className="flex border-b border-white/10">
+						<button
+							onClick={() => setActiveTab('transactions')}
+							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${
+								activeTab === 'transactions' ? 'text-white' : 'text-gray-400 hover:text-white'
+							}`}
+						>
+							<span className="flex items-center justify-center gap-2">
+								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+								</svg>
+								Transactions
+								<span className="ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{transactions.length}</span>
+							</span>
+							{activeTab === 'transactions' && (
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+							)}
+						</button>
+						<button
+							onClick={() => setActiveTab('expenses')}
+							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${
+								activeTab === 'expenses' ? 'text-white' : 'text-gray-400 hover:text-white'
+							}`}
+						>
+							<span className="flex items-center justify-center gap-2">
+								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+								</svg>
+								Dépenses
+								<span className="ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{expenses.length}</span>
+							</span>
+							{activeTab === 'expenses' && (
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+							)}
+						</button>
+					</div>
+
+					<div className="p-6">
+						{activeTab === 'transactions' && (
+							transactions.length === 0 ? (
+								<div className="text-center py-12">
+									<div className="w-16 h-16 bg-white/5 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+										<svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+										</svg>
+									</div>
+									<p className="text-gray-400 text-lg">Aucune transaction</p>
+									<p className="text-gray-500 text-sm mt-1">Vos transactions apparaîtront ici</p>
+								</div>
+							) : (
+								<div className="space-y-3">
+									{transactions.map((t, index) => (
+										<div 
+											key={t.id} 
+											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
+											style={{ animationDelay: `${index * 50}ms` }}
+										>
+											<div className="flex items-center gap-4">
+												<div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+													t.status === 'CONFIRMED' ? 'bg-emerald-500/20' : t.status === 'REJECTED' ? 'bg-red-500/20' : 'bg-yellow-500/20'
+												}`}>
+													{t.status === 'CONFIRMED' ? (
+														<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+														</svg>
+													) : (
+														<svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+														</svg>
+													)}
+												</div>
+												<div>
+													<p className="text-white font-medium">{t.description}</p>
+													<p className="text-gray-500 text-sm">{formatDate(t.createdAt)}</p>
+												</div>
+											</div>
+											<div className="text-right">
+												<p className="text-white font-bold text-lg">+{t.amount.toFixed(2)} €</p>
+												<span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(t.status)}`}>
+													{t.status}
+												</span>
+											</div>
+										</div>
+									))}
+								</div>
+							)
+						)}
+
+						{activeTab === 'expenses' && (
+							expenses.length === 0 ? (
+								<div className="text-center py-12">
+									<div className="w-16 h-16 bg-white/5 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+										<svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+										</svg>
+									</div>
+									<p className="text-gray-400 text-lg">Aucune dépense</p>
+									<p className="text-gray-500 text-sm mt-1">Vos dépenses apparaîtront ici</p>
+								</div>
+							) : (
+								<div className="space-y-3">
+									{expenses.map((e, index) => (
+										<div 
+											key={e.id} 
+											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
+											style={{ animationDelay: `${index * 50}ms` }}
+										>
+											<div className="flex items-center gap-4">
+												<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
+													<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+													</svg>
+												</div>
+												<div>
+													<p className="text-white font-medium">{e.description}</p>
+													<p className="text-gray-500 text-sm">{formatDate(e.createdAt)}</p>
+												</div>
+											</div>
+											<div className="text-right">
+												<p className="text-red-400 font-bold text-lg">-{e.amount.toFixed(2)} €</p>
+											</div>
+										</div>
+									))}
+								</div>
+							)
+						)}
+					</div>
 				</div>
-			)}
+			</div>
 		</div>
 	);
 }
