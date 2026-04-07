@@ -59,7 +59,7 @@ export default function AdminPage() {
 
 	const fetchStudents = async (token: string) => {
 		try {
-			const response = await fetch('http://localhost:3001/auth/students', {
+			const response = await fetch(`${process.env.VITE_API_URL}/auth/students`, {
 				headers: {
 					'Authorization': `Bearer ${token}`,
 					'Content-Type': 'application/json'

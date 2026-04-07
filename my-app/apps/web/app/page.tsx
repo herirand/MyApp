@@ -11,12 +11,12 @@ export default function HomePage() {
 	};
 
 	return (
-		<div 
+		<div
 			className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 relative overflow-hidden"
 			onMouseMove={handleMouseMove}
 		>
 			<div className="absolute inset-0 overflow-hidden">
-				<div 
+				<div
 					className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-3xl"
 					style={{
 						background: 'radial-gradient(circle, rgba(99, 102, 241, 0.8) 0%, transparent 70%)',
@@ -48,12 +48,12 @@ export default function HomePage() {
 				</h1>
 
 				<p className="text-xl text-gray-300 max-w-2xl mx-auto animate-fadeIn stagger-2">
-					Une plateforme moderne pour gérer vos transactions. 
+					Une plateforme moderne pour gérer vos transactions.
 					Suivez vos revenus, vos dépenses et votre budget en temps réel.
 				</p>
 
 				<div className="flex flex-col sm:flex-row gap-4 justify-center pt-6 animate-fadeIn stagger-3">
-					<Link 
+					<Link
 						href="/login"
 						className="group px-8 py-4 bg-white text-indigo-900 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
 					>
@@ -64,7 +64,7 @@ export default function HomePage() {
 							</svg>
 						</span>
 					</Link>
-					<Link 
+					<Link
 						href="/signup"
 						className="group px-8 py-4 bg-transparent border-2 border-white/30 text-white rounded-2xl font-semibold text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
 					>

@@ -18,7 +18,7 @@ export default function LoginPage() {
 		setLoading(true);
 
 		try {
-			const response = await fetch('http://localhost:3001/auth/signin', {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password }),
@@ -34,7 +34,7 @@ export default function LoginPage() {
 
 			localStorage.setItem('token', data.token);
 			localStorage.setItem('role', data.role || 'STUDENT');
-			
+
 			if (data.role === 'ADMIN') {
 				router.push('/admin');
 			} else {
@@ -131,8 +131,8 @@ export default function LoginPage() {
 							</div>
 						</div>
 
-						<button 
-							type="submit" 
+						<button
+							type="submit"
 							disabled={loading}
 							className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/25"
 						>

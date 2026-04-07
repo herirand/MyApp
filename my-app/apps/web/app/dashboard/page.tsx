@@ -53,19 +53,19 @@ export default function DashboardPage() {
 	const fetchData = async (token: string) => {
 		try {
 			const [transRes, expenseRes, payRes] = await Promise.all([
-				fetch('http://localhost:3001/transactions/me', {
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
 					}
 				}),
-				fetch('http://localhost:3001/expense/me', {
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
 					}
 				}),
-				fetch('http://localhost:3001/pay', {
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/pay`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
@@ -130,7 +130,7 @@ export default function DashboardPage() {
 	const totalIncome = transactions
 		.filter(t => t.status === 'CONFIRMED')
 		.reduce((sum, t) => sum + t.amount, 0);
-	
+
 	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
 	if (loading) {
@@ -150,7 +150,7 @@ export default function DashboardPage() {
 				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
 				backgroundSize: '40px 40px',
 			}} />
-			
+
 			<div className="relative max-w-6xl mx-auto">
 				<header className="flex justify-between items-center mb-8 animate-fadeIn">
 					<div>
@@ -222,9 +222,8 @@ export default function DashboardPage() {
 					<div className="flex border-b border-white/10">
 						<button
 							onClick={() => setActiveTab('transactions')}
-							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${
-								activeTab === 'transactions' ? 'text-white' : 'text-gray-400 hover:text-white'
-							}`}
+							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${activeTab === 'transactions' ? 'text-white' : 'text-gray-400 hover:text-white'
+								}`}
 						>
 							<span className="flex items-center justify-center gap-2">
 								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -239,9 +238,8 @@ export default function DashboardPage() {
 						</button>
 						<button
 							onClick={() => setActiveTab('expenses')}
-							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${
-								activeTab === 'expenses' ? 'text-white' : 'text-gray-400 hover:text-white'
-							}`}
+							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${activeTab === 'expenses' ? 'text-white' : 'text-gray-400 hover:text-white'
+								}`}
 						>
 							<span className="flex items-center justify-center gap-2">
 								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,15 +269,14 @@ export default function DashboardPage() {
 							) : (
 								<div className="space-y-3">
 									{transactions.map((t, index) => (
-										<div 
-											key={t.id} 
+										<div
+											key={t.id}
 											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
 											style={{ animationDelay: `${index * 50}ms` }}
 										>
 											<div className="flex items-center gap-4">
-												<div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-													t.status === 'CONFIRMED' ? 'bg-emerald-500/20' : t.status === 'REJECTED' ? 'bg-red-500/20' : 'bg-yellow-500/20'
-												}`}>
+												<div className={`w-10 h-10 rounded-xl flex items-center justify-center ${t.status === 'CONFIRMED' ? 'bg-emerald-500/20' : t.status === 'REJECTED' ? 'bg-red-500/20' : 'bg-yellow-500/20'
+													}`}>
 													{t.status === 'CONFIRMED' ? (
 														<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -321,8 +318,8 @@ export default function DashboardPage() {
 							) : (
 								<div className="space-y-3">
 									{expenses.map((e, index) => (
-										<div 
-											key={e.id} 
+										<div
+											key={e.id}
 											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
 											style={{ animationDelay: `${index * 50}ms` }}
 										>
