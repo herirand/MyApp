@@ -18,10 +18,16 @@ interface Expense {
 	createdAt: string;
 }
 
+interface GlobalTotal {
+	id: number;
+	total: number;
+}
+
 export default function DashboardPage() {
 	const router = useRouter();
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 	const [expenses, setExpenses] = useState<Expense[]>([]);
+	const [globalTotal, setGlobalTotal] = useState<number>(0);
 	const [activeTab, setActiveTab] = useState<'transactions' | 'expenses'>('transactions');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(true);
@@ -46,7 +52,7 @@ export default function DashboardPage() {
 
 	const fetchData = async (token: string) => {
 		try {
-			const [transRes, expenseRes] = await Promise.all([
+			const [transRes, expenseRes, payRes] = await Promise.all([
 				fetch('http://localhost:3001/transactions/me', {
 					headers: {
 						'Authorization': `Bearer ${token}`,
@@ -54,6 +60,12 @@ export default function DashboardPage() {
 					}
 				}),
 				fetch('http://localhost:3001/expense/me', {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				}),
+				fetch('http://localhost:3001/pay', {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
@@ -69,6 +81,13 @@ export default function DashboardPage() {
 			if (expenseRes.ok) {
 				const expenseData = await expenseRes.json();
 				setExpenses(expenseData);
+			}
+
+			if (payRes.ok) {
+				const payData: GlobalTotal[] = await payRes.json();
+				if (payData.length > 0) {
+					setGlobalTotal(payData[0].total);
+				}
 			}
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Erreur de chargement';
@@ -192,10 +211,10 @@ export default function DashboardPage() {
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
 								</svg>
 							</div>
-							<span className="text-purple-400 text-sm font-medium">Solde</span>
+							<span className="text-purple-400 text-sm font-medium">Solde total</span>
 						</div>
-						<p className="text-3xl font-bold text-white">{(totalIncome - totalExpenses).toFixed(2)} €</p>
-						<p className="text-purple-400/70 text-sm mt-1">Net disponible</p>
+						<p className="text-3xl font-bold text-white">{globalTotal.toFixed(2)} €</p>
+						<p className="text-purple-400/70 text-sm mt-1">Total communauté</p>
 					</div>
 				</div>
 
