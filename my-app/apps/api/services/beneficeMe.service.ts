@@ -14,7 +14,7 @@ async function beneficeMeService(request: FastifyRequest, reply: FastifyReply) {
 		return reply.status(401).send({
 			success: false,
 			error: error ?? 'token invalide',
-		})
+		});
 	}
 }
 

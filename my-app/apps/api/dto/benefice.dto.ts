@@ -35,7 +35,8 @@ export const beneficeDto = {
 
 export const beneficeMeDto = {
 	schema: {
-		tags: 'Recuperer tout les transactions de benefice',
+		tags: ['benefice'],
+		description: 'Recuperer tout les transactions de benefice',
 		response: {
 			200: {
 				type: 'array',

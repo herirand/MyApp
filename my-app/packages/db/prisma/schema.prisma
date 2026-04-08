@@ -38,6 +38,13 @@ model Expense {
     createdAt   DateTime @default(now())
 }
 
+model benefice {
+    id          Int      @id @default(autoincrement())
+    amount      Float
+    description String
+    createdAt   DateTime @default(now())
+}
+
 model Global {
     id    Int   @id @default(autoincrement())
     total Float @default(0)

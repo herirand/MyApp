@@ -37,8 +37,6 @@ async function signinService(request: FastifyRequest, reply: FastifyReply) {
 		role: existingUser.role
 	})
 
-	console.log(`token: ${token}`);
-
 	return reply.code(201).send({
 		success: true,
 		token: token,
