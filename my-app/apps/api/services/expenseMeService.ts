@@ -1,14 +1,8 @@
 import { prisma } from "@myapp/db";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-type TokenPayload = {
-	id: number;
-	role: string;
-}
-
 async function expenseMeService(request: FastifyRequest, reply: FastifyReply) {
 	try {
-		await request.jwtVerify<TokenPayload>();
 
 		const expenses = await prisma.expense.findMany({
 			orderBy: {

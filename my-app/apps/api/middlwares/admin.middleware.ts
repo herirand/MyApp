@@ -1,6 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { TokenPayload } from "./auth.middleware";
-import { request } from "http";
 
 export async function requireAdmin(request: FastifyRequest, reply: FastifyReply) {
 	try {

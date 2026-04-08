@@ -1,14 +1,8 @@
 import { prisma } from "@myapp/db";
 import { FastifyReply, FastifyRequest } from "fastify";
 
-type TokenPayload = {
-	id: number;
-	role: string;
-}
-
 async function payService(request: FastifyRequest, reply: FastifyReply) {
 	try {
-		await request.jwtVerify<TokenPayload>();
 
 		const total = await prisma.global.findMany();
 
