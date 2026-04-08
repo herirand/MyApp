@@ -3,10 +3,10 @@ import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
 import fastifyCors from "@fastify/cors";
-import authRoutes from "./routes/authRoutes";
 import fastifyJwt from "@fastify/jwt";
-import transactionRoutes from "./routes/transactionRoutes";
-import adminRoutes from "./routes/adminRoutes";
+import authRoutes from "./routes/auth.routes";
+import adminRoutes from "./routes/admin.routes";
+import transactionRoutes from "./routes/students.routes";
 
 dotenv.config();
 console.log(`URL_FRONT: ${process.env.URL_FRONT} | URL_SWAGGER: ${process.env.URL_SWAGGER} | port: ${process.env.PORT}`);
@@ -53,10 +53,6 @@ app.register(fastifySwagger, {
 app.register(fastifySwaggerUi, {
 	routePrefix: '/api-docs'
 });
-
-// app.register(fastifyStatic, {
-// 	root: '/'
-// });
 
 app.register(authRoutes, { prefix: '/auth' });
 app.register(transactionRoutes);

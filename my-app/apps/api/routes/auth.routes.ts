@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { signupInputSchema, signinInputSchema } from "../dto/signupSchemas";
-import signupService from "../services/signupService";
-import signinService from "../services/signinService";
+import { signupInputSchema, signinInputSchema } from "../dto/signup.dto";
+import signupService from "../services/signup.service";
+import signinService from "../services/signin.service";
 
 function authRoutes(app: FastifyInstance) {
 	app.post('/signup', signupInputSchema, signupService);
