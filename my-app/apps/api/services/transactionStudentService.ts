@@ -2,18 +2,13 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "@myapp/db";
 import "@fastify/jwt";
 
-type TokenPayload = {
-	id: number;
-	role: string;
-};
-
 async function transactionStudentService(request: FastifyRequest, reply: FastifyReply) {
 	try {
-		const decodedToken = await request.jwtVerify<TokenPayload>();
+		let studeId: number = Number(request.user.id);
 
 		const mytransactions = await prisma.transaction.findMany({
 			where: {
-				studentId: decodedToken.id
+				studentId: studeId
 			}
 		});
 

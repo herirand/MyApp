@@ -1,18 +1,8 @@
 import { prisma } from "@myapp/db";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-type TokenPayload = {
-	id: number;
-	role: string;
-};
-
 async function transactionAdminService(request: FastifyRequest, reply: FastifyReply) {
 	try {
-		const decodedToken = await request.jwtVerify<TokenPayload>();
-
-		if (decodedToken.role !== 'ADMIN') {
-			return reply.status(403).send({ error: "admin only" });
-		}
 
 		const { amount, description, username } = request.body as any;
 
