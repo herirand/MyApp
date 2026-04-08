@@ -1,12 +1,6 @@
 import { prisma } from "@myapp/db";
 import { FastifyReply, FastifyRequest } from "fastify";
 
-type TokenPayload = {
-	id: number;
-	role: string;
-}
-
-
 async function expenseService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 
@@ -18,7 +12,7 @@ async function expenseService(request: FastifyRequest, reply: FastifyReply) {
 		if (amount < 0) {
 			return reply.status(400).send({
 				success: false,
-				error: 'valuer negative'
+				error: 'valeur negative'
 			});
 		}
 
@@ -26,9 +20,10 @@ async function expenseService(request: FastifyRequest, reply: FastifyReply) {
 		const currentTotal = globalTotal?.total ?? 0;
 		const newTotal = currentTotal - amount;
 
-		await prisma.global.update({
+		await prisma.global.upsert({
 			where: { id: globalTotal?.id },
-			data: { total: newTotal }
+			update: { total: { increment: newTotal } },
+			create: { total: newTotal }
 		})
 
 		const newExpense = await prisma.expense.create({
@@ -36,14 +31,12 @@ async function expenseService(request: FastifyRequest, reply: FastifyReply) {
 		})
 
 		return reply.send(newExpense);
-
 	} catch (error) {
 		return reply.status(401).send({
 			success: false,
 			error: error ?? "erreur lors du retrait",
 		})
 	}
-
 }
 
 export default expenseService;
