@@ -20,6 +20,11 @@ interface ExpenseFormData {
 	description: string;
 }
 
+interface BeneficeFormData {
+	amount: string;
+	description: string;
+}
+
 interface Stats {
 	total: number;
 	pending: number;
@@ -31,7 +36,8 @@ export default function AdminPage() {
 	const [students, setStudents] = useState<Student[]>([]);
 	const [formData, setFormData] = useState<FormData>({ username: '', amount: '', description: '' });
 	const [expenseForm, setExpenseForm] = useState<ExpenseFormData>({ amount: '', description: '' });
-	const [activeTab, setActiveTab] = useState<'transaction' | 'expense'>('transaction');
+	const [beneficeForm, setBeneficeForm] = useState<BeneficeFormData>({ amount: '', description: '' });
+	const [activeTab, setActiveTab] = useState<'transaction' | 'expense' | 'benefice'>('transaction');
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 	const [loading, setLoading] = useState(true);
@@ -83,7 +89,7 @@ export default function AdminPage() {
 		const token = localStorage.getItem('token');
 
 		try {
-			const response = await fetch('http://localhost:3001/transactions', {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, {
 				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${token}`,
@@ -127,7 +133,7 @@ export default function AdminPage() {
 		const token = localStorage.getItem('token');
 
 		try {
-			const response = await fetch('http://localhost:3001/expense', {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense`, {
 				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${token}`,
@@ -155,12 +161,53 @@ export default function AdminPage() {
 		}
 	};
 
+	const handleBeneficeSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setError('');
+		setSuccess('');
+		setSubmitting(true);
+
+		const token = localStorage.getItem('token');
+
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/benefice`, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					amount: parseFloat(beneficeForm.amount),
+					description: beneficeForm.description,
+				}),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.error || 'Erreur lors de la création du bénéfice');
+			}
+
+			setSuccess('Bénéfice créé avec succès !');
+			setBeneficeForm({ amount: '', description: '' });
+		} catch (err: unknown) {
+			const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
+			setError(errorMessage);
+		} finally {
+			setSubmitting(false);
+		}
+	};
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
 	const handleExpenseChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setExpenseForm({ ...expenseForm, [e.target.name]: e.target.value });
+	};
+
+	const handleBeneficeChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		setBeneficeForm({ ...beneficeForm, [e.target.name]: e.target.value });
 	};
 
 	const selectStudent = (username: string) => {
@@ -227,6 +274,18 @@ export default function AdminPage() {
 							>
 								Dépense
 								{activeTab === 'expense' && (
+									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+								)}
+							</button>
+							<button
+								type="button"
+								onClick={() => setActiveTab('benefice')}
+								className={`flex-1 py-3 text-sm font-medium transition-all relative ${
+									activeTab === 'benefice' ? 'text-white' : 'text-gray-400 hover:text-white'
+								}`}
+							>
+								Bénéfice
+								{activeTab === 'benefice' && (
 									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
 								)}
 							</button>
@@ -336,7 +395,7 @@ export default function AdminPage() {
 									) : 'Créer la transaction'}
 								</button>
 							</form>
-						) : (
+						) : activeTab === 'expense' ? (
 							<form onSubmit={handleExpenseSubmit} className="space-y-4">
 								{error && (
 									<div className="p-4 bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl text-sm flex items-center gap-3 animate-shake">
@@ -402,7 +461,73 @@ export default function AdminPage() {
 									) : 'Créer la dépense'}
 								</button>
 							</form>
-						)}
+						) : activeTab === 'benefice' ? (
+							<form onSubmit={handleBeneficeSubmit} className="space-y-4">
+								{error && (
+									<div className="p-4 bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl text-sm flex items-center gap-3 animate-shake">
+										<svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+											<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+										</svg>
+										{error}
+									</div>
+								)}
+								{success && (
+									<div className="p-4 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-xl text-sm flex items-center gap-3 animate-fadeIn">
+										<svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+											<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+										</svg>
+										{success}
+									</div>
+								)}
+
+								<div className="space-y-2">
+									<label className="block text-sm font-medium text-gray-300">Montant (€)</label>
+									<div className="relative">
+										<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+										<input
+											type="number"
+											name="amount"
+											required
+											step="0.01"
+											min="0"
+											value={beneficeForm.amount}
+											onChange={handleBeneficeChange}
+											className="w-full pl-10 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+											placeholder="0.00"
+										/>
+									</div>
+								</div>
+
+								<div className="space-y-2">
+									<label className="block text-sm font-medium text-gray-300">Description</label>
+									<textarea
+										name="description"
+										required
+										value={beneficeForm.description}
+										onChange={handleBeneficeChange}
+										rows={3}
+										className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all resize-none"
+										placeholder="Description du bénéfice..."
+									/>
+								</div>
+
+								<button
+									type="submit"
+									disabled={submitting}
+									className="w-full py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl font-semibold hover:from-emerald-500 hover:to-green-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/25"
+								>
+									{submitting ? (
+										<span className="flex items-center justify-center gap-2">
+											<svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+											</svg>
+											Création...
+										</span>
+									) : 'Créer le bénéfice'}
+								</button>
+							</form>
+						) : null}
 					</div>
 
 					<div className="space-y-6">

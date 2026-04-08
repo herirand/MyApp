@@ -18,6 +18,13 @@ interface Expense {
 	createdAt: string;
 }
 
+interface Benefice {
+	id: number;
+	amount: number;
+	description: string;
+	createdAt: string;
+}
+
 interface GlobalTotal {
 	id: number;
 	total: number;
@@ -27,8 +34,9 @@ export default function DashboardPage() {
 	const router = useRouter();
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 	const [expenses, setExpenses] = useState<Expense[]>([]);
+	const [benefices, setBenefices] = useState<Benefice[]>([]);
 	const [globalTotal, setGlobalTotal] = useState<number>(0);
-	const [activeTab, setActiveTab] = useState<'transactions' | 'expenses'>('transactions');
+	const [activeTab, setActiveTab] = useState<'transactions' | 'expenses' | 'benefices'>('transactions');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [refreshing, setRefreshing] = useState(false);
@@ -52,7 +60,7 @@ export default function DashboardPage() {
 
 	const fetchData = async (token: string) => {
 		try {
-			const [transRes, expenseRes, payRes] = await Promise.all([
+			const [transRes, expenseRes, payRes, beneficeRes] = await Promise.all([
 				fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
@@ -66,6 +74,12 @@ export default function DashboardPage() {
 					}
 				}),
 				fetch(`${process.env.NEXT_PUBLIC_API_URL}/pay`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				}),
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/benefice/me`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
@@ -88,6 +102,11 @@ export default function DashboardPage() {
 				if (payData.length > 0) {
 					setGlobalTotal(payData[0].total);
 				}
+			}
+
+			if (beneficeRes.ok) {
+				const beneficeData = await beneficeRes.json();
+				setBenefices(beneficeData);
 			}
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Erreur de chargement';
@@ -132,6 +151,8 @@ export default function DashboardPage() {
 		.reduce((sum, t) => sum + t.amount, 0);
 
 	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+	const totalBenefice = benefices.reduce((sum, b) => sum + b.amount, 0);
 
 	if (loading) {
 		return (
@@ -252,6 +273,22 @@ export default function DashboardPage() {
 								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
 							)}
 						</button>
+						<button
+							onClick={() => setActiveTab('benefices')}
+							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${activeTab === 'benefices' ? 'text-white' : 'text-gray-400 hover:text-white'
+								}`}
+						>
+							<span className="flex items-center justify-center gap-2">
+								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+								</svg>
+								Bénéfices
+								<span className="ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{benefices.length}</span>
+							</span>
+							{activeTab === 'benefices' && (
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+							)}
+						</button>
 					</div>
 
 					<div className="p-6">
@@ -336,6 +373,45 @@ export default function DashboardPage() {
 											</div>
 											<div className="text-right">
 												<p className="text-red-400 font-bold text-lg">-{e.amount.toFixed(2)} €</p>
+											</div>
+										</div>
+									))}
+								</div>
+							)
+						)}
+
+						{activeTab === 'benefices' && (
+							benefices.length === 0 ? (
+								<div className="text-center py-12">
+									<div className="w-16 h-16 bg-white/5 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+										<svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+										</svg>
+									</div>
+									<p className="text-gray-400 text-lg">Aucun bénéfice</p>
+									<p className="text-gray-500 text-sm mt-1">Les bénéfices apparaîtront ici</p>
+								</div>
+							) : (
+								<div className="space-y-3">
+									{benefices.map((b, index) => (
+										<div
+											key={b.id}
+											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
+											style={{ animationDelay: `${index * 50}ms` }}
+										>
+											<div className="flex items-center gap-4">
+												<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+													<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+													</svg>
+												</div>
+												<div>
+													<p className="text-white font-medium">{b.description}</p>
+													<p className="text-gray-500 text-sm">{formatDate(b.createdAt)}</p>
+												</div>
+											</div>
+											<div className="text-right">
+												<p className="text-emerald-400 font-bold text-lg">+{b.amount.toFixed(2)} €</p>
 											</div>
 										</div>
 									))}
