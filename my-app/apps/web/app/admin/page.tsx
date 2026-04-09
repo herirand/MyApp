@@ -65,10 +65,9 @@ export default function AdminPage() {
 
 	const fetchStudents = async (token: string) => {
 		try {
-			const response = await fetch(`${process.env.VITE_API_URL}/auth/students`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student`, {
 				headers: {
-					'Authorization': `Bearer ${token}`,
-					'Content-Type': 'application/json'
+					'Authorization': `Bearer ${token}`
 				}
 			});
 			if (response.ok) {
@@ -110,7 +109,7 @@ export default function AdminPage() {
 
 			setSuccess('Transaction créée avec succès !');
 			setFormData({ username: '', amount: '', description: '' });
-			
+
 			setStats(prev => ({
 				...prev,
 				total: prev.total + 1,
@@ -227,12 +226,12 @@ export default function AdminPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
-			<div className="absolute inset-0" style={{
+		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 relative">
+			<div className="absolute inset-0 -z-10" style={{
 				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
 				backgroundSize: '40px 40px',
 			}} />
-			
+
 			<div className="relative max-w-6xl mx-auto">
 				<header className="flex justify-between items-center mb-8 animate-fadeIn">
 					<div>
@@ -256,9 +255,8 @@ export default function AdminPage() {
 							<button
 								type="button"
 								onClick={() => setActiveTab('transaction')}
-								className={`flex-1 py-3 text-sm font-medium transition-all relative ${
-									activeTab === 'transaction' ? 'text-white' : 'text-gray-400 hover:text-white'
-								}`}
+								className={`flex-1 py-3 text-sm font-medium transition-all relative ${activeTab === 'transaction' ? 'text-white' : 'text-gray-400 hover:text-white'
+									}`}
 							>
 								Transaction
 								{activeTab === 'transaction' && (
@@ -268,9 +266,8 @@ export default function AdminPage() {
 							<button
 								type="button"
 								onClick={() => setActiveTab('expense')}
-								className={`flex-1 py-3 text-sm font-medium transition-all relative ${
-									activeTab === 'expense' ? 'text-white' : 'text-gray-400 hover:text-white'
-								}`}
+								className={`flex-1 py-3 text-sm font-medium transition-all relative ${activeTab === 'expense' ? 'text-white' : 'text-gray-400 hover:text-white'
+									}`}
 							>
 								Dépense
 								{activeTab === 'expense' && (
@@ -280,9 +277,8 @@ export default function AdminPage() {
 							<button
 								type="button"
 								onClick={() => setActiveTab('benefice')}
-								className={`flex-1 py-3 text-sm font-medium transition-all relative ${
-									activeTab === 'benefice' ? 'text-white' : 'text-gray-400 hover:text-white'
-								}`}
+								className={`flex-1 py-3 text-sm font-medium transition-all relative ${activeTab === 'benefice' ? 'text-white' : 'text-gray-400 hover:text-white'
+									}`}
 							>
 								Bénéfice
 								{activeTab === 'benefice' && (
@@ -552,7 +548,7 @@ export default function AdminPage() {
 						<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 animate-fadeIn stagger-3">
 							<h3 className="text-lg font-bold text-white mb-4">Actions rapides</h3>
 							<div className="space-y-3">
-								<button className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-4 text-left group">
+								<button onClick={() => router.push('/admin/student')} className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-4 text-left group">
 									<div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
 										<svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -564,7 +560,7 @@ export default function AdminPage() {
 									</div>
 								</button>
 								<button
-									onClick={() => router.push('/student')}
+									onClick={() => router.push('/admin/student/manage')}
 									className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-4 text-left group"
 								>
 									<div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
