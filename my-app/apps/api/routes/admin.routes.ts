@@ -14,7 +14,7 @@ async function adminRoutes(app: FastifyInstance) {
 	app.post('/expense', { ...expenseDto, preHandler: requireAdmin }, expenseService);
 	app.post('/transactions', { ...transactionAdminDto, preHandler: requireAdmin }, transactionAdminService);
 	app.post('/benefice', { ...beneficeDto, preHandler: requireAdmin }, beneficeService);
-	app.post('/student', { ...allStudentsDto, preHandler: requireAdmin }, allStudentsService);
+	app.get('/student', { ...allStudentsDto, preHandler: requireAdmin }, allStudentsService);
 }
 
 export default adminRoutes;
