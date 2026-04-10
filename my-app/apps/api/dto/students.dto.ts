@@ -1,6 +1,6 @@
 export const allStudentsDto = {
 	schema: {
-		tags: ['tout les etudiants'],
+		tags: ['user'],
 		description: 'Recuperer tout les etudiants',
 		security: [{ bearerAuth: [] }],
 		response: {
@@ -25,7 +25,7 @@ export const allStudentsDto = {
 
 export const deleteUserDto = {
 	schema: {
-		tags: ['effacer un utilisateur'],
+		tags: ['user'],
 		description: 'effacer un utilisateur',
 		security: [{ bearerAuth: [] }],
 		body: {

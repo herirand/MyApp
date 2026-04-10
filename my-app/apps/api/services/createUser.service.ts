@@ -1,40 +1,41 @@
-import { prisma } from "@myapp/db"
+import { prisma } from "@myapp/db";
+import { FastifyReply, FastifyRequest } from "fastify";
 import { passWordHash } from "../utils/utils";
-import { FastifyRequest, FastifyReply } from "fastify";
 
-async function signupService(request: FastifyRequest, reply: FastifyReply) {
+async function createUserService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 
 		const { email, username, id, password, confirmPassword } = request.body as {
-			email: string,
-			username: string,
-			id: string,
-			password: string,
-			confirmPassword: string,
+			email: string;
+			username: string;
+			id: string;
+			password: string;
+			confirmPassword: string;
 		};
 
 		if (password != confirmPassword) {
-			return reply.code(400).send({
+			return reply.status(400).send({
 				success: false,
 				error: "password don't match",
-			})
+			});
 		}
 
 		const existingUser = await prisma.user.findFirst({
 			where: {
 				OR: [
 					{ email },
-					{ userId: id }
+					{ userId: id },
 				]
 			},
 		});
 
 		if (existingUser) {
-			return reply.code(409).send({
+			return reply.status(409).send({
 				success: false,
 				error: "email ou id deja utiliser",
 			});
 		}
+
 		const pass = await passWordHash(password);
 
 		const user = await prisma.user.create({
@@ -46,9 +47,9 @@ async function signupService(request: FastifyRequest, reply: FastifyReply) {
 			}
 		})
 
-		return reply.code(201).send({
+		return reply.status(201).send({
 			success: true,
-			message: "user ariver "
+			message: "user creared",
 		});
 	} catch (error) {
 		return reply.status(400).send({
@@ -58,4 +59,4 @@ async function signupService(request: FastifyRequest, reply: FastifyReply) {
 	}
 }
 
-export default signupService;
+export default createUserService;
