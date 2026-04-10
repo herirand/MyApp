@@ -71,7 +71,7 @@ export default function StudentManagePage() {
 		const token = localStorage.getItem('token');
 
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create`, {
 				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${token}`,
@@ -81,7 +81,8 @@ export default function StudentManagePage() {
 					username: formData.username,
 					email: formData.email,
 					password: formData.password,
-					role: 'STUDENT'
+					confirmPassword: formData.password,
+					id: `${formData.username.toLowerCase()}_${Date.now()}`
 				}),
 			});
 

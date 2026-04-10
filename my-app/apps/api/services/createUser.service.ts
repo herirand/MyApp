@@ -40,7 +40,7 @@ async function createUserService(request: FastifyRequest, reply: FastifyReply) {
 
 		const user = await prisma.user.create({
 			data: {
-				email, username, userId: id, password: pass
+				email, username, userId: id, password: pass, role: 'STUDENT'
 			},
 			select: {
 				email: true, username: true, role: true
