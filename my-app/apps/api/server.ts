@@ -62,7 +62,10 @@ const start = async () => {
 	try {
 		const port = process.env.PORT;
 		await app.listen({ port: parseInt(port || '3001'), host: '0.0.0.0' });
+		console.log(`serveur runing in port : ${port || '3001'}`);
 	} catch (err) {
+		app.log.error(err);
+		console.log(`serveur exiting`);
 		process.exit(1);
 	}
 }

@@ -10,6 +10,11 @@ async function allStudentsService(request: FastifyRequest, reply: FastifyReply) 
 			},
 			orderBy: {
 				username: 'asc',
+			},
+			select: {
+				id: true,
+				username: true,
+				userId: true,
 			}
 		});
 

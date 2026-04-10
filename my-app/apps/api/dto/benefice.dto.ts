@@ -19,15 +19,15 @@ export const beneficeDto = {
 					amount: { type: 'number' },
 					description: { type: 'string' },
 					createdAt: { type: 'string' },
-				},
-				401: {
-					type: 'object',
-					properties: { error: { type: 'string' } }
-				},
-				403: {
-					type: 'object',
-					properties: { error: { type: 'string' } }
 				}
+			},
+			401: {
+				type: 'object',
+				properties: { error: { type: 'string' } }
+			},
+			403: {
+				type: 'object',
+				properties: { error: { type: 'string' } }
 			}
 		}
 	}
