@@ -48,7 +48,7 @@ export default function DashboardExpensesPage() {
 			} else {
 				setError('Erreur lors du chargement');
 			}
-		} catch (err) {
+		} catch {
 			setError('Erreur de connexion');
 		} finally {
 			setLoading(false);

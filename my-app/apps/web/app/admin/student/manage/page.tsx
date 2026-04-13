@@ -27,10 +27,10 @@ export default function StudentManagePage() {
 	const [success, setSuccess] = useState('');
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
+		const storedToken = localStorage.getItem('token');
 		const role = localStorage.getItem('role');
 
-		if (!token) {
+		if (!storedToken) {
 			router.push('/login');
 			return;
 		}
@@ -40,7 +40,7 @@ export default function StudentManagePage() {
 			return;
 		}
 
-		fetchStudents(token);
+		fetchStudents(storedToken);
 	}, [router]);
 
 	const fetchStudents = async (token: string) => {
@@ -94,7 +94,9 @@ export default function StudentManagePage() {
 
 			setSuccess('Étudiant créé avec succès !');
 			setFormData({ username: '', email: '', password: '', userId: '' });
-			fetchStudents(token);
+			if (token) {
+				fetchStudents(token);
+			}
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
 			setError(errorMessage);
@@ -163,7 +165,7 @@ export default function StudentManagePage() {
 						)}
 
 					<div className="space-y-2">
-						<label className="block text-sm font-medium text-gray-300">Nom d'utilisateur</label>
+						<label className="block text-sm font-medium text-gray-300">Nom d&apos;utilisateur</label>
 						<input
 							type="text"
 							name="username"
@@ -171,7 +173,7 @@ export default function StudentManagePage() {
 							value={formData.username}
 							onChange={handleChange}
 							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-							placeholder="Nom d'utilisateur"
+							placeholder="Nom d&apos;utilisateur"
 						/>
 					</div>
 

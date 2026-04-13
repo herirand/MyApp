@@ -64,7 +64,7 @@ export default function LoginPage() {
 						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 						</svg>
-						Retour à l'accueil
+						Retour à l&apos;accueil
 					</Link>
 				</div>
 
@@ -151,7 +151,7 @@ export default function LoginPage() {
 					<p className="text-center mt-6 text-gray-400">
 						Pas de compte ?{' '}
 						<Link href="/signup" className="text-purple-400 hover:text-purple-300 font-medium transition-colors hover:underline">
-							S'inscrire
+							S&apos;inscrire
 						</Link>
 					</p>
 				</div>

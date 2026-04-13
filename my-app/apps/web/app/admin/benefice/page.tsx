@@ -101,7 +101,7 @@ export default function AdminBeneficePage() {
 						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 						</svg>
-						Retour à l'administration
+						Retour à l&apos;administration
 					</button>
 					<h1 className="text-3xl font-bold text-white">Bénéfices</h1>
 					<p className="text-gray-400 mt-1">Ajouter un bénéfice à la communauté</p>

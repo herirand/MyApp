@@ -17,7 +17,7 @@ interface FormData {
 
 export default function AdminExpensesPage() {
 	const router = useRouter();
-	const [expenses, setExpenses] = useState<Expense[]>([]);
+	const [expenses] = useState<Expense[]>([]);
 	const [formData, setFormData] = useState<FormData>({ amount: '', description: '' });
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');

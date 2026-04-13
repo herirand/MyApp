@@ -152,8 +152,6 @@ export default function DashboardPage() {
 
 	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
-	const totalBenefice = benefices.reduce((sum, b) => sum + b.amount, 0);
-
 	if (loading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">

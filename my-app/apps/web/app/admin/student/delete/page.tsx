@@ -28,10 +28,10 @@ export default function DeleteStudentPage() {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
+		const storedToken = localStorage.getItem('token');
 		const role = localStorage.getItem('role');
 
-		if (!token) {
+		if (!storedToken) {
 			router.push('/login');
 			return;
 		}
@@ -41,7 +41,7 @@ export default function DeleteStudentPage() {
 			return;
 		}
 
-		fetchStudents(token);
+		fetchStudents(storedToken);
 	}, [router]);
 
 	const fetchStudents = async (token: string) => {
@@ -113,7 +113,9 @@ export default function DeleteStudentPage() {
 			
 			// Refresh student list
 			setTimeout(() => {
-				fetchStudents(token);
+				if (token) {
+					fetchStudents(token);
+				}
 			}, 1500);
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
@@ -121,10 +123,6 @@ export default function DeleteStudentPage() {
 		} finally {
 			setDeleting(false);
 		}
-	};
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
 	if (loading) {
@@ -151,7 +149,7 @@ export default function DeleteStudentPage() {
 					Retour
 				</button>
 				<div>
-					<h1 className="text-3xl font-bold text-white">Suppression d'étudiants</h1>
+					<h1 className="text-3xl font-bold text-white">Suppression d&apos;étudiants</h1>
 					<p className="text-gray-400 mt-1">Supprimer un étudiant du système</p>
 				</div>
 			</header>
@@ -232,7 +230,7 @@ export default function DeleteStudentPage() {
 								<p className="text-gray-300 text-sm mb-3">Étudiant à supprimer:</p>
 								<div className="space-y-2">
 									<div>
-										<label className="block text-xs text-gray-400 mb-1">Nom d'utilisateur</label>
+										<label className="block text-xs text-gray-400 mb-1">Nom d&apos;utilisateur</label>
 										<input
 											type="text"
 											name="username"
@@ -256,7 +254,7 @@ export default function DeleteStudentPage() {
 
 							<div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
 								<p className="text-red-300 text-sm">
-									<strong>Attention:</strong> Cette action supprimera définitivement l'étudiant et toutes ses transactions.
+									<strong>Attention:</strong> Cette action supprimera définitivement l&apos;étudiant et toutes ses transactions.
 								</p>
 							</div>
 
