@@ -1,5 +1,6 @@
 import { prisma } from "@myapp/db";
 import { FastifyRequest, FastifyReply } from "fastify";
+import { AppError } from "../lib/errors";
 
 
 async function deleteUserService(request: FastifyRequest, reply: FastifyReply) {
@@ -17,17 +18,11 @@ async function deleteUserService(request: FastifyRequest, reply: FastifyReply) {
 		})
 
 		if (!isUser) {
-			return reply.status(401).send({
-				success: false,
-				error: 'user not found',
-			});
+			throw new AppError('user not found', 404);
 		}
 
 		if (isUser.role === 'ADMIN') {
-			return reply.status(401).send({
-				success: false,
-				error: 'admn only',
-			});
+			throw new AppError('admin only', 403);
 		}
 		await prisma.$transaction([
 			prisma.transaction.deleteMany({
@@ -43,9 +38,15 @@ async function deleteUserService(request: FastifyRequest, reply: FastifyReply) {
 			message: 'succes'
 		});
 	} catch (error) {
+		if (error instanceof AppError) {
+			return reply.status(error.status).send({
+				success: false,
+				error: error.message,
+			});
+		}
 		return reply.status(401).send({
 			success: false,
-			error: error ?? "delete user error",
+			error: error ?? "internal server error",
 		})
 	}
 }

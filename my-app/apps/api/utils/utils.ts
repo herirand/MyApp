@@ -10,3 +10,6 @@ export function passWordHash(password: string): any {
 	return hashedPassword;
 }
 
+export function isOnlyDigit(id: string): boolean {
+	return /^\d+$/.test(id);
+}

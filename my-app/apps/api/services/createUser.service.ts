@@ -1,6 +1,7 @@
 import { prisma } from "@myapp/db";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { passWordHash } from "../utils/utils";
+import { isOnlyDigit, passWordHash } from "../utils/utils";
+import { AppError } from "../lib/errors";
 
 async function createUserService(request: FastifyRequest, reply: FastifyReply) {
 	try {
@@ -14,11 +15,11 @@ async function createUserService(request: FastifyRequest, reply: FastifyReply) {
 		};
 
 		if (password != confirmPassword) {
-			return reply.status(400).send({
-				success: false,
-				error: "password don't match",
-			});
+			throw new AppError("password don't match", 400);
 		}
+
+		if (!isOnlyDigit(id))
+			throw new AppError("id doit etre que des entier", 400);
 
 		const existingUser = await prisma.user.findFirst({
 			where: {
@@ -30,10 +31,7 @@ async function createUserService(request: FastifyRequest, reply: FastifyReply) {
 		});
 
 		if (existingUser) {
-			return reply.status(409).send({
-				success: false,
-				error: "email ou id deja utiliser",
-			});
+			throw new AppError("email ou id deja utiliser", 409);
 		}
 
 		const pass = await passWordHash(password);
@@ -52,10 +50,17 @@ async function createUserService(request: FastifyRequest, reply: FastifyReply) {
 			message: "user creared",
 		});
 	} catch (error) {
-		return reply.status(400).send({
-			success: false,
-			error: error ?? 'erreur lors de la creation de l\'user',
-		});
+		if (error instanceof AppError) {
+			return reply.status(error.status).send({
+				success: false,
+				error: error.message,
+			})
+		} else {
+			return reply.status(500).send({
+				success: false,
+				error: error ?? 'internal server error',
+			});
+		}
 	}
 }
 
