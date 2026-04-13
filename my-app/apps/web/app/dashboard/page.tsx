@@ -173,11 +173,21 @@ export default function DashboardPage() {
 			}} />
 
 			<div className="relative max-w-6xl mx-auto">
-				<header className="flex justify-between items-center mb-8 animate-fadeIn">
-					<div>
-						<h1 className="text-3xl font-bold text-white">Tableau de bord</h1>
-						<p className="text-gray-400 mt-1">Gérez vos transactions et dépenses</p>
-					</div>
+			<header className="flex justify-between items-center mb-8 animate-fadeIn">
+				<div>
+					<h1 className="text-3xl font-bold text-white">Tableau de bord</h1>
+					<p className="text-gray-400 mt-1">Gérez vos transactions et dépenses</p>
+				</div>
+				<div className="flex items-center gap-3">
+					<button
+						onClick={() => router.push('/dashboard/change-password')}
+						className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all text-white hover:scale-105"
+						title="Changer le mot de passe"
+					>
+						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+						</svg>
+					</button>
 					<button
 						onClick={handleRefresh}
 						disabled={refreshing}
@@ -187,7 +197,8 @@ export default function DashboardPage() {
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 						</svg>
 					</button>
-				</header>
+				</div>
+			</header>
 
 				{error && (
 					<div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl flex items-center gap-3 animate-shake">

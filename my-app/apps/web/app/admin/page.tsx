@@ -233,12 +233,21 @@ export default function AdminPage() {
 			}} />
 
 			<div className="relative max-w-6xl mx-auto">
-				<header className="flex justify-between items-center mb-8 animate-fadeIn">
-					<div>
-						<h1 className="text-3xl font-bold text-white">Administration</h1>
-						<p className="text-gray-400 mt-1">Gestion des transactions et utilisateurs</p>
-					</div>
-				</header>
+			<header className="flex justify-between items-center mb-8 animate-fadeIn">
+				<div>
+					<h1 className="text-3xl font-bold text-white">Administration</h1>
+					<p className="text-gray-400 mt-1">Gestion des transactions et utilisateurs</p>
+				</div>
+				<button
+					onClick={() => router.push('/admin/change-password')}
+					className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all text-white hover:scale-105"
+					title="Changer le mot de passe"
+				>
+					<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+					</svg>
+				</button>
+			</header>
 
 				<div className="grid md:grid-cols-2 gap-6 mb-8">
 					<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 animate-fadeIn stagger-1">
@@ -284,6 +293,20 @@ export default function AdminPage() {
 								{activeTab === 'benefice' && (
 									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
 								)}
+							</button>
+							<button
+								onClick={() => router.push('/admin/student/delete')}
+								className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-4 text-left group"
+							>
+								<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+									<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+									</svg>
+								</div>
+								<div>
+									<p className="text-white font-medium">Supprimer un étudiant</p>
+									<p className="text-gray-400 text-sm">Supprimer un utilisateur du système</p>
+								</div>
 							</button>
 						</div>
 
@@ -571,6 +594,20 @@ export default function AdminPage() {
 									<div>
 										<p className="text-white font-medium">Gérer les étudiants</p>
 										<p className="text-gray-400 text-sm">Ajouter, modifier ou supprimer</p>
+									</div>
+								</button>
+								<button
+									onClick={() => router.push('/admin/student/delete')}
+									className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-4 text-left group"
+								>
+									<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+										<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+										</svg>
+									</div>
+									<div>
+										<p className="text-white font-medium">Supprimer un étudiant</p>
+										<p className="text-gray-400 text-sm">Supprimer un utilisateur du système</p>
 									</div>
 								</button>
 							</div>

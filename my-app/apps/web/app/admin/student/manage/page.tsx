@@ -14,12 +14,13 @@ interface FormData {
 	username: string;
 	email: string;
 	password: string;
+	userId: string | number;
 }
 
 export default function StudentManagePage() {
 	const router = useRouter();
 	const [students, setStudents] = useState<Student[]>([]);
-	const [formData, setFormData] = useState<FormData>({ username: '', email: '', password: '' });
+	const [formData, setFormData] = useState<FormData>({ username: '', email: '', password: '', userId: '' });
 	const [loading, setLoading] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState('');
@@ -45,10 +46,9 @@ export default function StudentManagePage() {
 	const fetchStudents = async (token: string) => {
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student`, {
-				method: 'POST',
+				method: 'GET',
 				headers: {
-					'Authorization': `Bearer ${token}`,
-					'Content-Type': 'application/json'
+					'Authorization': `Bearer ${token}`
 				}
 			});
 			if (response.ok) {
@@ -82,7 +82,7 @@ export default function StudentManagePage() {
 					email: formData.email,
 					password: formData.password,
 					confirmPassword: formData.password,
-					id: `${formData.username.toLowerCase()}_${Date.now()}`
+					id: String(formData.userId)
 				}),
 			});
 
@@ -93,7 +93,7 @@ export default function StudentManagePage() {
 			}
 
 			setSuccess('Étudiant créé avec succès !');
-			setFormData({ username: '', email: '', password: '' });
+			setFormData({ username: '', email: '', password: '', userId: '' });
 			fetchStudents(token);
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
@@ -104,7 +104,11 @@ export default function StudentManagePage() {
 	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
+		const { name, value } = e.target;
+		setFormData({
+			...formData,
+			[name]: name === 'userId' ? (value === '' ? '' : parseInt(value, 10)) : value
+		});
 	};
 
 	if (loading) {
@@ -158,31 +162,46 @@ export default function StudentManagePage() {
 							</div>
 						)}
 
-						<div className="space-y-2">
-							<label className="block text-sm font-medium text-gray-300">Nom d'utilisateur</label>
-							<input
-								type="text"
-								name="username"
-								required
-								value={formData.username}
-								onChange={handleChange}
-								className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-								placeholder="Nom d'utilisateur"
-							/>
-						</div>
+					<div className="space-y-2">
+						<label className="block text-sm font-medium text-gray-300">Nom d'utilisateur</label>
+						<input
+							type="text"
+							name="username"
+							required
+							value={formData.username}
+							onChange={handleChange}
+							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+							placeholder="Nom d'utilisateur"
+						/>
+					</div>
 
-						<div className="space-y-2">
-							<label className="block text-sm font-medium text-gray-300">Email</label>
-							<input
-								type="email"
-								name="email"
-								required
-								value={formData.email}
-								onChange={handleChange}
-								className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-								placeholder="email@exemple.com"
-							/>
-						</div>
+					<div className="space-y-2">
+						<label className="block text-sm font-medium text-gray-300">ID Utilisateur (userId)</label>
+						<input
+							type="number"
+							name="userId"
+							required
+							min="1"
+							step="1"
+							value={formData.userId}
+							onChange={handleChange}
+							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+							placeholder="Ex: 12345"
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<label className="block text-sm font-medium text-gray-300">Email</label>
+						<input
+							type="email"
+							name="email"
+							required
+							value={formData.email}
+							onChange={handleChange}
+							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+							placeholder="email@exemple.com"
+						/>
+					</div>
 
 						<div className="space-y-2">
 							<label className="block text-sm font-medium text-gray-300">Mot de passe</label>
