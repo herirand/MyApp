@@ -16,14 +16,12 @@ async function beneficeService(request: FastifyRequest, reply: FastifyReply) {
 			});
 		}
 
-		const globalTotal = await prisma.global.findFirst();
-		const currentTotal = globalTotal?.total ?? 0;
-		const newTotal = currentTotal + amount;
+		const GLOBAL_ID = 1;
 
 		await prisma.global.upsert({
-			where: { id: globalTotal?.id },
-			update: { total: { increment: newTotal } },
-			create: { total: newTotal }
+			where: { id: GLOBAL_ID },
+			update: { total: { increment: amount } },
+			create: { id: GLOBAL_ID, total: amount }
 		});
 
 		const newBenefice = await prisma.benefice.create({

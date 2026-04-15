@@ -15,16 +15,12 @@ async function expenseService(request: FastifyRequest, reply: FastifyReply) {
 				error: 'valeur negative'
 			});
 		}
-
-		const globalTotal = await prisma.global.findFirst();
-		const currentTotal = globalTotal?.total ?? 0;
-		const newTotal = currentTotal - amount;
-		console.log(`currentTotal: ${currentTotal} | amount: ${amount} | newTotal: ${newTotal}`);
+		const GLOBAL_ID = 1;
 
 		await prisma.global.upsert({
-			where: { id: globalTotal?.id },
-			update: { total: newTotal },
-			create: { total: newTotal }
+			where: { id: GLOBAL_ID },
+			update: { total: { decrement: amount } },
+			create: { id: GLOBAL_ID, total: amount }
 		})
 
 		const newExpense = await prisma.expense.create({

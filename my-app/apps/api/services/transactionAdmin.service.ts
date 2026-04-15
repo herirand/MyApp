@@ -4,7 +4,12 @@ import { FastifyRequest, FastifyReply } from "fastify";
 async function transactionAdminService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 
-		const { amount, description, username } = request.body as any;
+		const { amount, description, username } = request.body as {
+			amount: number;
+			description: string;
+			username: string;
+		};
+		const GLOBAL_ID = 1;
 
 		const existingUser = await prisma.user.findFirst({
 			where: {
@@ -27,9 +32,9 @@ async function transactionAdminService(request: FastifyRequest, reply: FastifyRe
 		});
 
 		await prisma.global.upsert({
-			where: { id: 1 },
+			where: { id: GLOBAL_ID },
 			update: { total: { increment: Number(amount) } },
-			create: { id: 1, total: Number(amount) },
+			create: { id: GLOBAL_ID, total: Number(amount) },
 		});
 
 		const newTransaction = await prisma.transaction.create({
