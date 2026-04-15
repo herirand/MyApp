@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Pagination } from '@/components/ui/Pagination';
 
 interface Expense {
 	id: number;
@@ -15,14 +16,18 @@ interface FormData {
 	description: string;
 }
 
+const ITEMS_PER_PAGE = 10;
+
 export default function AdminExpensesPage() {
 	const router = useRouter();
-	const [expenses] = useState<Expense[]>([]);
+	const [expenses, setExpenses] = useState<Expense[]>([]);
 	const [formData, setFormData] = useState<FormData>({ amount: '', description: '' });
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -38,8 +43,40 @@ export default function AdminExpensesPage() {
 			return;
 		}
 
-		setLoading(false);
+		fetchExpenses(token, 1);
 	}, [router]);
+
+	const fetchExpenses = async (token: string, page: number) => {
+		try {
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/expense?page=${page}&limit=${ITEMS_PER_PAGE}`,
+				{
+					headers: {
+						'Authorization': `Bearer ${token}`
+					}
+				}
+			);
+
+			if (response.ok) {
+				const data = await response.json();
+				setExpenses(data);
+				// Rough estimation of total pages (assuming ~100 total items)
+				setTotalPages(Math.ceil(100 / ITEMS_PER_PAGE));
+			}
+		} catch (err) {
+			console.error('Error fetching expenses:', err);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handlePageChange = (page: number) => {
+		setCurrentPage(page);
+		const token = localStorage.getItem('token');
+		if (token) {
+			fetchExpenses(token, page);
+		}
+	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -219,30 +256,36 @@ export default function AdminExpensesPage() {
 							<p className="text-red-400/70 text-sm mt-1">{expenses.length} dépenses</p>
 						</div>
 
-						<div className="space-y-3 max-h-96 overflow-y-auto">
-							{expenses.length === 0 ? (
-								<div className="text-center py-8">
-									<p className="text-gray-400">Aucune dépense</p>
-								</div>
-							) : (
-								expenses.map((e) => (
-									<div key={e.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-										<div className="flex items-center gap-4">
-											<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
-												<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-												</svg>
-											</div>
-											<div>
-												<p className="text-white font-medium">{e.description}</p>
-												<p className="text-gray-500 text-sm">{formatDate(e.createdAt)}</p>
-											</div>
+					<div className="space-y-3 max-h-96 overflow-y-auto">
+						{expenses.length === 0 ? (
+							<div className="text-center py-8">
+								<p className="text-gray-400">Aucune dépense</p>
+							</div>
+						) : (
+							expenses.map((e) => (
+								<div key={e.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+									<div className="flex items-center gap-4">
+										<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
+											<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+											</svg>
 										</div>
-										<p className="text-red-400 font-bold">-{e.amount.toFixed(2)} €</p>
+										<div>
+											<p className="text-white font-medium">{e.description}</p>
+											<p className="text-gray-500 text-sm">{formatDate(e.createdAt)}</p>
+										</div>
 									</div>
-								))
-							)}
-						</div>
+									<p className="text-red-400 font-bold">-{e.amount.toFixed(2)} €</p>
+								</div>
+							))
+						)}
+					</div>
+					<Pagination
+						currentPage={currentPage}
+						totalPages={totalPages}
+						onPageChange={handlePageChange}
+						isLoading={loading}
+					/>
 					</div>
 				</div>
 			</div>

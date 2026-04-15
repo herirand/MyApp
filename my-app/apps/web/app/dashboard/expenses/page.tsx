@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Pagination } from '@/components/ui/Pagination';
 
 interface Expense {
 	id: number;
@@ -15,6 +16,9 @@ export default function DashboardExpensesPage() {
 	const [expenses, setExpenses] = useState<Expense[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
+	const ITEMS_PER_PAGE = 10;
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -33,9 +37,9 @@ export default function DashboardExpensesPage() {
 		fetchData(token);
 	}, [router]);
 
-	const fetchData = async (token: string) => {
+	const fetchData = async (token: string, page: number = 1) => {
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
 				headers: {
 					'Authorization': `Bearer ${token}`,
 					'Content-Type': 'application/json'
@@ -45,6 +49,8 @@ export default function DashboardExpensesPage() {
 			if (response.ok) {
 				const data = await response.json();
 				setExpenses(data);
+				// Estimate total pages
+				setTotalPages(data.length > 0 ? Math.max(1, Math.ceil(100 / ITEMS_PER_PAGE)) : 1);
 			} else {
 				setError('Erreur lors du chargement');
 			}
@@ -52,6 +58,15 @@ export default function DashboardExpensesPage() {
 			setError('Erreur de connexion');
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const handlePageChange = (page: number) => {
+		setCurrentPage(page);
+		const token = localStorage.getItem('token');
+		if (token) {
+			setLoading(true);
+			fetchData(token, page);
 		}
 	};
 
@@ -159,6 +174,15 @@ export default function DashboardExpensesPage() {
 									</div>
 								))}
 							</div>
+						)}
+
+						{expenses.length > 0 && (
+							<Pagination
+								currentPage={currentPage}
+								totalPages={totalPages}
+								onPageChange={handlePageChange}
+								isLoading={loading}
+							/>
 						)}
 					</div>
 				</div>
