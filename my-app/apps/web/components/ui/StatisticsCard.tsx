@@ -107,27 +107,27 @@ export function StatisticsCard() {
 			<h3 className="text-lg font-bold text-white mb-6">Statistiques Financières</h3>
 			<div className="grid grid-cols-3 gap-4">
 				{/* Total Amount */}
-				<div className="text-center p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-					<p className="text-3xl font-bold text-blue-400">{formatCurrency(stats.totalAmount)}</p>
-					<p className="text-blue-400/70 text-sm mt-1">Montant Total</p>
+				<div className="text-center p-6 bg-blue-500/10 rounded-xl border border-blue-500/20 overflow-hidden">
+					<p className="text-3xl font-bold text-blue-400 break-words">{formatCurrency(stats.totalAmount)}</p>
+					<p className="text-blue-400/70 text-sm mt-2">Montant Total</p>
 				</div>
 
 				{/* Total Expense */}
-				<div className="text-center p-4 bg-red-500/10 rounded-xl border border-red-500/20">
-					<p className="text-3xl font-bold text-red-400">{formatCurrency(stats.totalExpense)}</p>
-					<p className="text-red-400/70 text-sm mt-1">Dépenses</p>
+				<div className="text-center p-6 bg-red-500/10 rounded-xl border border-red-500/20 overflow-hidden">
+					<p className="text-3xl font-bold text-red-400 break-words">{formatCurrency(stats.totalExpense)}</p>
+					<p className="text-red-400/70 text-sm mt-2">Dépenses</p>
 				</div>
 
 				{/* Balance */}
-				<div className={`text-center p-4 rounded-xl border ${
+				<div className={`text-center p-6 rounded-xl border overflow-hidden ${
 					stats.balance >= 0
 						? 'bg-emerald-500/10 border-emerald-500/20'
 						: 'bg-orange-500/10 border-orange-500/20'
 				}`}>
-					<p className={`text-3xl font-bold ${stats.balance >= 0 ? 'text-emerald-400' : 'text-orange-400'}`}>
+					<p className={`text-3xl font-bold break-words ${stats.balance >= 0 ? 'text-emerald-400' : 'text-orange-400'}`}>
 						{formatCurrency(stats.balance)}
 					</p>
-					<p className={`text-sm mt-1 ${stats.balance >= 0 ? 'text-emerald-400/70' : 'text-orange-400/70'}`}>
+					<p className={`text-sm mt-2 ${stats.balance >= 0 ? 'text-emerald-400/70' : 'text-orange-400/70'}`}>
 						Solde
 					</p>
 				</div>
