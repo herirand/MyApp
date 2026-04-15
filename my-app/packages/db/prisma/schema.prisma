@@ -46,7 +46,7 @@ model benefice {
 }
 
 model Global {
-    id    Int   @id @default(autoincrement())
+    id    Int   @id
     total Float @default(0)
 }
 

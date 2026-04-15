@@ -19,10 +19,11 @@ async function expenseService(request: FastifyRequest, reply: FastifyReply) {
 		const globalTotal = await prisma.global.findFirst();
 		const currentTotal = globalTotal?.total ?? 0;
 		const newTotal = currentTotal - amount;
+		console.log(`currentTotal: ${currentTotal} | amount: ${amount} | newTotal: ${newTotal}`);
 
 		await prisma.global.upsert({
 			where: { id: globalTotal?.id },
-			update: { total: { increment: newTotal } },
+			update: { total: newTotal },
 			create: { total: newTotal }
 		})
 
