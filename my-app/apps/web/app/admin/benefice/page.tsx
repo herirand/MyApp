@@ -262,6 +262,7 @@ export default function AdminBeneficePage() {
 							totalPages={totalPages}
 							onPageChange={handlePageChange}
 							isLoading={loading}
+							isEmpty={benefices.length === 0}
 						/>
 					</div>
 				</div>

@@ -176,14 +176,24 @@ export default function BeneficePage() {
 							</div>
 						)}
 
-						{benefices.length > 0 && (
-							<Pagination
-								currentPage={currentPage}
-								totalPages={totalPages}
-								onPageChange={handlePageChange}
-								isLoading={loading}
-							/>
-						)}
+					{benefices.length > 0 && (
+						<Pagination
+							currentPage={currentPage}
+							totalPages={totalPages}
+							onPageChange={handlePageChange}
+							isLoading={loading}
+						/>
+					)}
+
+					{benefices.length === 0 && currentPage > 1 && (
+						<Pagination
+							currentPage={currentPage}
+							totalPages={totalPages}
+							onPageChange={handlePageChange}
+							isLoading={loading}
+							isEmpty={true}
+						/>
+					)}
 					</div>
 				</div>
 			</div>

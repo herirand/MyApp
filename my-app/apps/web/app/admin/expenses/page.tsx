@@ -285,6 +285,7 @@ export default function AdminExpensesPage() {
 						totalPages={totalPages}
 						onPageChange={handlePageChange}
 						isLoading={loading}
+						isEmpty={expenses.length === 0}
 					/>
 					</div>
 				</div>

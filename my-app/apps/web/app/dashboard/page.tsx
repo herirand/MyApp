@@ -470,32 +470,35 @@ export default function DashboardPage() {
 						)}
 
 						{/* Pagination for transactions */}
-						{activeTab === 'transactions' && transactions.length > 0 && (
+						{activeTab === 'transactions' && (
 							<Pagination
 								currentPage={transactionPage}
 								totalPages={transactionTotalPages}
 								onPageChange={handleTransactionPageChange}
 								isLoading={loading}
+								isEmpty={transactions.length === 0}
 							/>
 						)}
 
 						{/* Pagination for expenses */}
-						{activeTab === 'expenses' && expenses.length > 0 && (
+						{activeTab === 'expenses' && (
 							<Pagination
 								currentPage={expensePage}
 								totalPages={expenseTotalPages}
 								onPageChange={handleExpensePageChange}
 								isLoading={loading}
+								isEmpty={expenses.length === 0}
 							/>
 						)}
 
 						{/* Pagination for benefices */}
-						{activeTab === 'benefices' && benefices.length > 0 && (
+						{activeTab === 'benefices' && (
 							<Pagination
 								currentPage={beneficePage}
 								totalPages={beneficeTotalPages}
 								onPageChange={handleBeneficePageChange}
 								isLoading={loading}
+								isEmpty={benefices.length === 0}
 							/>
 						)}
 					</div>

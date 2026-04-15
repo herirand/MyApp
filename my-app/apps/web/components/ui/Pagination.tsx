@@ -7,14 +7,34 @@ interface PaginationProps {
 	totalPages: number;
 	onPageChange: (page: number) => void;
 	isLoading?: boolean;
+	isEmpty?: boolean;
 }
 
 export function Pagination({
 	currentPage,
 	totalPages,
 	onPageChange,
-	isLoading = false
+	isLoading = false,
+	isEmpty = false
 }: PaginationProps) {
+	// Show reset button if we're on a page > 1 and data is empty
+	if (isEmpty && currentPage > 1) {
+		return (
+			<div className="flex items-center justify-center mt-6 px-6 py-4 bg-white/5 border-t border-white/10 rounded-b-2xl">
+				<div className="text-center">
+					<p className="text-gray-400 mb-3">Aucun résultat sur cette page</p>
+					<button
+						onClick={() => onPageChange(1)}
+						className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:from-purple-500 hover:to-pink-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+						disabled={isLoading}
+					>
+						Revenir à la page 1
+					</button>
+				</div>
+			</div>
+		);
+	}
+
 	if (totalPages <= 1) return null;
 
 	return (

@@ -132,6 +132,7 @@ export default function StudentListPage() {
 					totalPages={totalPages}
 					onPageChange={handlePageChange}
 					isLoading={loading}
+					isEmpty={students.length === 0}
 				/>
 			</div>
 		</>
