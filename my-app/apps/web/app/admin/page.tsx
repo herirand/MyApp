@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { StatisticsCard } from '@/components/ui/StatisticsCard';
 
 interface Student {
 	id: string;
@@ -25,12 +26,6 @@ interface BeneficeFormData {
 	description: string;
 }
 
-interface Stats {
-	total: number;
-	pending: number;
-	confirmed: number;
-}
-
 export default function AdminPage() {
 	const router = useRouter();
 	const [students, setStudents] = useState<Student[]>([]);
@@ -43,7 +38,6 @@ export default function AdminPage() {
 	const [loading, setLoading] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
 	const [showStudents, setShowStudents] = useState(false);
-	const [stats, setStats] = useState<Stats>({ total: 0, pending: 0, confirmed: 0 });
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -109,12 +103,6 @@ export default function AdminPage() {
 
 			setSuccess('Transaction créée avec succès !');
 			setFormData({ username: '', amount: '', description: '' });
-
-			setStats(prev => ({
-				...prev,
-				total: prev.total + 1,
-				pending: prev.pending + 1
-			}));
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
 			setError(errorMessage);
@@ -549,24 +537,8 @@ export default function AdminPage() {
 						) : null}
 					</div>
 
-					<div className="space-y-6">
-						<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 animate-fadeIn stagger-2">
-							<h3 className="text-lg font-bold text-white mb-6">Statistiques</h3>
-							<div className="grid grid-cols-3 gap-4">
-								<div className="text-center p-4 bg-white/5 rounded-xl">
-									<p className="text-3xl font-bold text-white">{stats.total}</p>
-									<p className="text-gray-400 text-sm mt-1">Total</p>
-								</div>
-								<div className="text-center p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
-									<p className="text-3xl font-bold text-yellow-400">{stats.pending}</p>
-									<p className="text-yellow-400/70 text-sm mt-1">En attente</p>
-								</div>
-								<div className="text-center p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
-									<p className="text-3xl font-bold text-emerald-400">{stats.confirmed}</p>
-									<p className="text-emerald-400/70 text-sm mt-1">Confirmées</p>
-								</div>
-							</div>
-						</div>
+				<div className="space-y-6">
+					<StatisticsCard />
 
 						<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 animate-fadeIn stagger-3">
 							<h3 className="text-lg font-bold text-white mb-4">Actions rapides</h3>
