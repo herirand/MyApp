@@ -19,13 +19,13 @@ const app = Fastify({
 
 //cors
 app.register(fastifyCors, {
-	origin: ['http://localhost:3000', 'http://localhost:3001'],
+	origin: [`${process.env.URL_FRONT}`, `${process.env.URL_SWAGGER}`],
 	credentials: true,
 	methods: ["GET", "POST", "DELETE", "PUT"],
 });
 
 app.register(fastifyJwt, {
-	secret: "fastifyjwtpass"
+	secret: `${process.env.JWT_SECRETS}`
 })
 
 //swagger config
