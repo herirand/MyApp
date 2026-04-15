@@ -22,7 +22,7 @@ async function deleteUserService(request: FastifyRequest, reply: FastifyReply) {
 		}
 
 		if (isUser.role === 'ADMIN') {
-			throw new AppError('admin only', 403);
+			throw new AppError('Non autoriser', 403);
 		}
 		await prisma.$transaction([
 			prisma.transaction.deleteMany({

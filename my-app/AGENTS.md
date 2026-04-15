@@ -22,10 +22,10 @@ Database: PostgreSQL (Neon), schema at `packages/db/prisma/schema.prisma`
 - **API env loading**: Uses `dotenv.config()` in `server.ts`, reads from `apps/api/.env`
 - **Web env loading**: Next.js built-in, reads `apps/web/.env.local`, vars must start with `NEXT_PUBLIC_` for client access
 - **No test suite**: No `npm test` or test scripts defined
-- **CORS hardcoded**: API restricts to `http://localhost:3000` and `http://localhost:3001` in `apps/api/server.ts:22`
-- **JWT secret hardcoded**: API uses `fastifyjwtpass` as secret in `apps/api/server.ts:28` (DEV ONLY—change in production)
+- **CORS via env**: API origin controlled by `URL_FRONT` and `URL_SWAGGER` env vars, not hardcoded
+- **JWT secret via env**: API reads from `JWT_SECRETS` env var, not hardcoded
 - **Swagger UI**: Available at `http://localhost:3001/api-docs` when API is running
-- **Security**: Run `npm audit` before deploying; see `SECURITY.md` for JWT production setup
+- **Security vulnerabilities**: CRITICAL JWT vulns in `fast-jwt@6.1.0`. Run `npm audit fix` to update to 6.2.1
 
 ## Environment Variables
 | File | Purpose | Key Variables |
