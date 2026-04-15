@@ -3,6 +3,15 @@ export const allStudentsDto = {
 		tags: ['user'],
 		description: 'Recuperer tout les etudiants',
 		security: [{ bearerAuth: [] }],
+		querystring: {
+			type: 'object',
+			properties: {
+				page: { type: 'integer', minimum: 1, default: 1 },
+				limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+			},
+			additionalProperties: false,
+			required: [],
+		},
 		response: {
 			200: {
 				type: 'array',

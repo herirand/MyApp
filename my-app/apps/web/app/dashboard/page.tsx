@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Pagination } from '@/components/ui/Pagination';
 
 interface Transaction {
 	id: number;
@@ -41,6 +42,15 @@ export default function DashboardPage() {
 	const [loading, setLoading] = useState(true);
 	const [refreshing, setRefreshing] = useState(false);
 
+	// Pagination states
+	const [expensePage, setExpensePage] = useState(1);
+	const [beneficePage, setBeneficePage] = useState(1);
+	const [transactionPage, setTransactionPage] = useState(1);
+	const [expenseTotalPages, setExpenseTotalPages] = useState(1);
+	const [beneficeTotalPages, setBeneficeTotalPages] = useState(1);
+	const [transactionTotalPages, setTransactionTotalPages] = useState(1);
+	const ITEMS_PER_PAGE = 10;
+
 	useEffect(() => {
 		const token = localStorage.getItem('token');
 		const role = localStorage.getItem('role');
@@ -58,16 +68,16 @@ export default function DashboardPage() {
 		fetchData(token);
 	}, [router]);
 
-	const fetchData = async (token: string) => {
+	const fetchData = async (token: string, page: number = 1, expPage: number = 1, benPage: number = 1) => {
 		try {
 			const [transRes, expenseRes, payRes, beneficeRes] = await Promise.all([
-				fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me`, {
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
 					}
 				}),
-				fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me`, {
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me?page=${expPage}&limit=${ITEMS_PER_PAGE}`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
@@ -79,7 +89,7 @@ export default function DashboardPage() {
 						'Content-Type': 'application/json'
 					}
 				}),
-				fetch(`${process.env.NEXT_PUBLIC_API_URL}/benefice/me`, {
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/benefice/me?page=${benPage}&limit=${ITEMS_PER_PAGE}`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
@@ -90,11 +100,14 @@ export default function DashboardPage() {
 			if (transRes.ok) {
 				const transData = await transRes.json();
 				setTransactions(transData);
+				// Estimate total pages (API should return metadata, but we can estimate)
+				setTransactionTotalPages(Math.ceil(transData.length / ITEMS_PER_PAGE) || 1);
 			}
 
 			if (expenseRes.ok) {
 				const expenseData = await expenseRes.json();
 				setExpenses(expenseData);
+				setExpenseTotalPages(Math.ceil(expenseData.length > 0 ? Math.max(1, Math.ceil(100 / ITEMS_PER_PAGE)) : 1));
 			}
 
 			if (payRes.ok) {
@@ -107,6 +120,7 @@ export default function DashboardPage() {
 			if (beneficeRes.ok) {
 				const beneficeData = await beneficeRes.json();
 				setBenefices(beneficeData);
+				setBeneficeTotalPages(Math.ceil(beneficeData.length > 0 ? Math.max(1, Math.ceil(100 / ITEMS_PER_PAGE)) : 1));
 			}
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Erreur de chargement';
@@ -120,9 +134,36 @@ export default function DashboardPage() {
 		setRefreshing(true);
 		const token = localStorage.getItem('token');
 		if (token) {
-			await fetchData(token);
+			await fetchData(token, transactionPage, expensePage, beneficePage);
 		}
 		setRefreshing(false);
+	};
+
+	const handleExpensePageChange = (page: number) => {
+		setExpensePage(page);
+		const token = localStorage.getItem('token');
+		if (token) {
+			setLoading(true);
+			fetchData(token, transactionPage, page, beneficePage);
+		}
+	};
+
+	const handleBeneficePageChange = (page: number) => {
+		setBeneficePage(page);
+		const token = localStorage.getItem('token');
+		if (token) {
+			setLoading(true);
+			fetchData(token, transactionPage, expensePage, page);
+		}
+	};
+
+	const handleTransactionPageChange = (page: number) => {
+		setTransactionPage(page);
+		const token = localStorage.getItem('token');
+		if (token) {
+			setLoading(true);
+			fetchData(token, page, expensePage, beneficePage);
+		}
 	};
 
 	const getStatusColor = (status: string) => {
@@ -426,6 +467,36 @@ export default function DashboardPage() {
 									))}
 								</div>
 							)
+						)}
+
+						{/* Pagination for transactions */}
+						{activeTab === 'transactions' && transactions.length > 0 && (
+							<Pagination
+								currentPage={transactionPage}
+								totalPages={transactionTotalPages}
+								onPageChange={handleTransactionPageChange}
+								isLoading={loading}
+							/>
+						)}
+
+						{/* Pagination for expenses */}
+						{activeTab === 'expenses' && expenses.length > 0 && (
+							<Pagination
+								currentPage={expensePage}
+								totalPages={expenseTotalPages}
+								onPageChange={handleExpensePageChange}
+								isLoading={loading}
+							/>
+						)}
+
+						{/* Pagination for benefices */}
+						{activeTab === 'benefices' && benefices.length > 0 && (
+							<Pagination
+								currentPage={beneficePage}
+								totalPages={beneficeTotalPages}
+								onPageChange={handleBeneficePageChange}
+								isLoading={loading}
+							/>
 						)}
 					</div>
 				</div>

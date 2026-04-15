@@ -4,6 +4,9 @@ import { FastifyReply, FastifyRequest } from "fastify";
 async function allStudentsService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 
+		const page = Math.max(1, parseInt((request.query as any)?.page) || 1);
+		const limit = Math.min(100, Math.max(1, parseInt((request.query as any)?.limit) || 20));
+
 		const all = await prisma.user.findMany({
 			where: {
 				role: 'STUDENT',
@@ -15,7 +18,9 @@ async function allStudentsService(request: FastifyRequest, reply: FastifyReply) 
 				id: true,
 				username: true,
 				userId: true,
-			}
+			},
+			skip: (page - 1) * limit,
+			take: limit,
 		});
 
 		return reply.send(all);

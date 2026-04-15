@@ -37,6 +37,16 @@ export const expenseMeDto = {
 	schema: {
 		tags: ['expense'],
 		description: 'Recuperer toutes les transaction de depense',
+		security: [{ bearerAuth: [] }],
+		querystring: {
+			type: 'object',
+			properties: {
+				page: { type: 'integer', minimum: 1, default: 1 },
+				limit: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+			},
+			additionalProperties: false,
+			required: [],
+		},
 		response: {
 			200: {
 				type: 'array',
@@ -49,6 +59,10 @@ export const expenseMeDto = {
 						createdAt: { type: 'string' },
 					}
 				}
+			},
+			401: {
+				type: 'object',
+				properties: { error: { type: 'string' } }
 			},
 			500: {
 				type: 'object',
