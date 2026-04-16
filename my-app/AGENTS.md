@@ -10,31 +10,33 @@
 
 ## Architecture
 Monorepo with npm workspaces:
-- `apps/web` - Next.js 15.x frontend (`@myapp/web`, App Router, Tailwind CSS)
-- `apps/api` - Fastify 5.x API server (`@myapp/api`, TypeScript with tsx)
-- `packages/db` - Prisma client (`@myapp/db`, exports via `index.ts`)
-
-Database: PostgreSQL (Neon), schema at `packages/db/prisma/schema.prisma`
+- `apps/web` - Next.js 15.x frontend (`@myapp/web`, App Router, Tailwind CSS, ESLint)
+- `apps/api` - Fastify 5.x API server (`@myapp/api`, TypeScript, tsx watch, routes + services + middlewares)
+- `packages/db` - Prisma client (`@myapp/db`, PostgreSQL on Neon)
 
 ## Critical Notes
-- **Next.js version**: Root `package.json` has 16.2.3 but `apps/web/package.json` pins 15.x (web's version takes precedence)
-- **Prisma migrations**: Run `npx prisma migrate deploy` from `packages/db/` (uses root `.env`)
-- **API env loading**: Uses `dotenv.config()` in `server.ts`, reads from `apps/api/.env`
-- **Web env loading**: Next.js built-in, reads `apps/web/.env.local`, vars must start with `NEXT_PUBLIC_` for client access
-- **No test suite**: No `npm test` or test scripts defined
-- **CORS hardcoded**: API restricts to `http://localhost:3000` and `http://localhost:3001` in `apps/api/server.ts:22`
-- **JWT secret hardcoded**: API uses `fastifyjwtpass` as secret in `apps/api/server.ts:28` (DEV ONLY—change in production)
-- **Swagger UI**: Available at `http://localhost:3001/api-docs` when API is running
-- **Security**: Run `npm audit` before deploying; see `SECURITY.md` for JWT production setup
+- **Next.js version mismatch**: Root `package.json` pins 16.2.3 but `apps/web/package.json` pins 15.x. The workspace version (15.x) takes precedence in web app.
+- **No test suite**: No tests defined; no `npm test` script.
+- **Prisma migrations**: Run `npx prisma migrate deploy` from `packages/db/` directory (uses root `.env`).
+- **API environment loading**: `apps/api/server.ts:11` calls `dotenv.config()` to read `apps/api/.env`.
+- **Web environment loading**: Next.js built-in; reads `apps/web/.env.local`, vars must have `NEXT_PUBLIC_` prefix for client-side access.
+- **CORS uses env vars**: API allows requests from `${URL_FRONT}` and `${URL_SWAGGER}` (set in `apps/api/.env`, not hardcoded).
+- **JWT secret from env**: API reads `JWT_SECRETS` from `apps/api/.env` (set in `server.ts:28`).
+- **Swagger UI**: Available at `http://localhost:3001/api-docs` when API running.
 
 ## Environment Variables
-| File | Purpose | Key Variables |
-|------|---------|---------------|
-| `/.env` | Shared (Prisma CLI only, dev only) | `DATABASE_URL`, `PORT` |
-| `/apps/api/.env` | API server (production critical) | `PORT`, `DATABASE_URL`, `URL_FRONT`, `URL_SWAGGER`, `JWT_SECRETS` |
-| `/apps/web/.env.local` | Frontend (Next.js dev only) | `NEXT_PUBLIC_API_URL` (must have prefix) |
+| File | Key Variables | Usage |
+|------|---------------|-------|
+| `/.env` | `DATABASE_URL`, `PORT` | Root `.env` for Prisma CLI only (local dev) |
+| `/apps/api/.env` | `PORT`, `DATABASE_URL`, `URL_FRONT`, `URL_SWAGGER`, `JWT_SECRETS` | API server config |
+| `/apps/web/.env.local` | `NEXT_PUBLIC_API_URL` | Frontend API endpoint (must have `NEXT_PUBLIC_` prefix) |
 
-**Deployment note**: When deploying frontend and backend separately:
-- Root `/.env` is only needed locally for Prisma CLI
-- **API server**: Set env vars directly in hosting platform (don't commit `apps/api/.env` to production)
-- **Frontend**: Set `NEXT_PUBLIC_API_URL` to your backend URL in hosting platform (e.g., Vercel, Netlify env settings)
+**Production deployment notes**:
+- Root `/.env` is local-only; not needed in production.
+- API server: Set env vars in hosting platform; do NOT commit `apps/api/.env` to production.
+- Frontend: Set `NEXT_PUBLIC_API_URL` to your backend URL in platform env (Vercel, Netlify, etc.).
+
+## Known Security Issues
+See `SECURITY.md` for npm audit findings and fixes. Two vulnerabilities exist:
+1. `fast-jwt@6.1.0` (via `@fastify/jwt`) — CRITICAL JWT validation bypass. Fix: `npm audit fix`
+2. `next` (16.2.1/15.5.14) — HIGH DoS risk. Fix: upgrade to 16.2.3 or 15.5.15+
