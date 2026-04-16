@@ -4,7 +4,10 @@ import { FastifyReply, FastifyRequest } from "fastify";
 async function payService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 
-		const total = await prisma.global.findMany();
+		const TOTAL_ID = 1;
+		const total = await prisma.global.findMany({
+			where: { id: TOTAL_ID }
+		});
 
 		return reply.code(200).send(total);
 
