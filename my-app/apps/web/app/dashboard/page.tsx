@@ -42,6 +42,7 @@ export default function DashboardPage() {
 	const [activeTab, setActiveTab] = useState<'transactions' | 'expenses' | 'benefices'>('transactions');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(true);
+	const [tablesLoading, setTablesLoading] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
 
 	// Pagination states
@@ -72,19 +73,8 @@ export default function DashboardPage() {
 
 	const fetchData = async (token: string, page: number = 1, expPage: number = 1, benPage: number = 1) => {
 		try {
-			const [transRes, expenseRes, studentPayRes, payRes, spentRes, beneficeRes] = await Promise.all([
-				fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
-					headers: {
-						'Authorization': `Bearer ${token}`,
-						'Content-Type': 'application/json'
-					}
-				}),
-				fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me?page=${expPage}&limit=${ITEMS_PER_PAGE}`, {
-					headers: {
-						'Authorization': `Bearer ${token}`,
-						'Content-Type': 'application/json'
-					}
-				}),
+			// PHASE 1: Charger les statistiques en priorité (cartes)
+			const [studentPayRes, payRes, spentRes] = await Promise.all([
 				fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/pay`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
@@ -102,29 +92,10 @@ export default function DashboardPage() {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
 					}
-				}),
-				fetch(`${process.env.NEXT_PUBLIC_API_URL}/benefice/me?page=${benPage}&limit=${ITEMS_PER_PAGE}`, {
-					headers: {
-						'Authorization': `Bearer ${token}`,
-						'Content-Type': 'application/json'
-					}
 				})
 			]);
 
-		if (transRes.ok) {
-			const transData = await transRes.json();
-			// Nouvelle structure: { data: [...], pagination: {...} }
-			setTransactions(transData.data || []);
-			setTransactionTotalPages(transData.pagination?.totalPages || 1);
-		}
-
-		if (expenseRes.ok) {
-			const expenseData = await expenseRes.json();
-			// Nouvelle structure: { data: [...], pagination: {...} }
-			setExpenses(expenseData.data || []);
-			setExpenseTotalPages(expenseData.pagination?.totalPages || 1);
-		}
-
+			// Traiter les réponses des statistiques
 			if (studentPayRes.ok) {
 				const studentPayData = await studentPayRes.json();
 				setUserBalance(studentPayData.balance || 0);
@@ -139,7 +110,6 @@ export default function DashboardPage() {
 
 			if (spentRes.ok) {
 				const spentData = await spentRes.json();
-				// Gère le format de réponse du backend: { success: true, spent: [...] }
 				const spentArray = spentData?.spent || spentData || [];
 				const total = Array.isArray(spentArray) 
 					? spentArray.reduce((sum, item) => sum + (item.total || item.amount || 0), 0)
@@ -147,16 +117,51 @@ export default function DashboardPage() {
 				setTotalSpent(total);
 			}
 
-		if (beneficeRes.ok) {
-			const beneficeData = await beneficeRes.json();
-			// Nouvelle structure: { data: [...], pagination: {...} }
-			setBenefices(beneficeData.data || []);
-			setBeneficeTotalPages(beneficeData.pagination?.totalPages || 1);
-		}
+			// Permettre au dashboard de s'afficher maintenant avec les cartes
+			setLoading(false);
+
+			// PHASE 2: Charger les tables en arrière-plan (sans bloquer l'affichage)
+			const [transRes, expenseRes, beneficeRes] = await Promise.all([
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				}),
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me?page=${expPage}&limit=${ITEMS_PER_PAGE}`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				}),
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/benefice/me?page=${benPage}&limit=${ITEMS_PER_PAGE}`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				})
+			]);
+
+			if (transRes.ok) {
+				const transData = await transRes.json();
+				setTransactions(transData.data || []);
+				setTransactionTotalPages(transData.pagination?.totalPages || 1);
+			}
+
+			if (expenseRes.ok) {
+				const expenseData = await expenseRes.json();
+				setExpenses(expenseData.data || []);
+				setExpenseTotalPages(expenseData.pagination?.totalPages || 1);
+			}
+
+			if (beneficeRes.ok) {
+				const beneficeData = await beneficeRes.json();
+				setBenefices(beneficeData.data || []);
+				setBeneficeTotalPages(beneficeData.pagination?.totalPages || 1);
+			}
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Erreur de chargement';
 			setError(errorMessage);
-		} finally {
 			setLoading(false);
 		}
 	};
@@ -170,30 +175,72 @@ export default function DashboardPage() {
 		setRefreshing(false);
 	};
 
-	const handleExpensePageChange = (page: number) => {
+	const handleExpensePageChange = async (page: number) => {
 		setExpensePage(page);
 		const token = localStorage.getItem('token');
 		if (token) {
-			setLoading(true);
-			fetchData(token, transactionPage, page, beneficePage);
+			setTablesLoading(true);
+			try {
+				const expenseRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/expense/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				});
+				if (expenseRes.ok) {
+					const expenseData = await expenseRes.json();
+					setExpenses(expenseData.data || []);
+					setExpenseTotalPages(expenseData.pagination?.totalPages || 1);
+				}
+			} finally {
+				setTablesLoading(false);
+			}
 		}
 	};
 
-	const handleBeneficePageChange = (page: number) => {
+	const handleBeneficePageChange = async (page: number) => {
 		setBeneficePage(page);
 		const token = localStorage.getItem('token');
 		if (token) {
-			setLoading(true);
-			fetchData(token, transactionPage, expensePage, page);
+			setTablesLoading(true);
+			try {
+				const beneficeRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/benefice/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				});
+				if (beneficeRes.ok) {
+					const beneficeData = await beneficeRes.json();
+					setBenefices(beneficeData.data || []);
+					setBeneficeTotalPages(beneficeData.pagination?.totalPages || 1);
+				}
+			} finally {
+				setTablesLoading(false);
+			}
 		}
 	};
 
-	const handleTransactionPageChange = (page: number) => {
+	const handleTransactionPageChange = async (page: number) => {
 		setTransactionPage(page);
 		const token = localStorage.getItem('token');
 		if (token) {
-			setLoading(true);
-			fetchData(token, page, expensePage, beneficePage);
+			setTablesLoading(true);
+			try {
+				const transRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				});
+				if (transRes.ok) {
+					const transData = await transRes.json();
+					setTransactions(transData.data || []);
+					setTransactionTotalPages(transData.pagination?.totalPages || 1);
+				}
+			} finally {
+				setTablesLoading(false);
+			}
 		}
 	};
 
@@ -500,7 +547,7 @@ export default function DashboardPage() {
 								currentPage={transactionPage}
 								totalPages={transactionTotalPages}
 								onPageChange={handleTransactionPageChange}
-								isLoading={loading}
+								isLoading={tablesLoading}
 								isEmpty={transactions.length === 0}
 							/>
 						)}
@@ -511,7 +558,7 @@ export default function DashboardPage() {
 								currentPage={expensePage}
 								totalPages={expenseTotalPages}
 								onPageChange={handleExpensePageChange}
-								isLoading={loading}
+								isLoading={tablesLoading}
 								isEmpty={expenses.length === 0}
 							/>
 						)}
@@ -522,7 +569,7 @@ export default function DashboardPage() {
 								currentPage={beneficePage}
 								totalPages={beneficeTotalPages}
 								onPageChange={handleBeneficePageChange}
-								isLoading={loading}
+								isLoading={tablesLoading}
 								isEmpty={benefices.length === 0}
 							/>
 						)}
