@@ -10,13 +10,16 @@ datasource db {
 model User {
     id          Int           @id @default(autoincrement())
     email       String        @unique
-    username    String
+    username    String        @unique
     password    String
     userId      String        @unique
     role        Role          @default(STUDENT)
     balance     Float         @default(0)
     createdAt   DateTime      @default(now())
     transaction Transaction[] @relation("StudentTransactions")
+
+    @@index([username])
+    @@index([role])
 }
 
 model Transaction {
@@ -29,6 +32,10 @@ model Transaction {
     createdAt   DateTime          @default(now())
     studentId   Int
     student     User              @relation("StudentTransactions", fields: [studentId], references: [id])
+
+    @@index([studentId])
+    @@index([createdAt])
+    @@index([status])
 }
 
 model Expense {
@@ -36,6 +43,8 @@ model Expense {
     amount      Float
     description String
     createdAt   DateTime @default(now())
+
+    @@index([createdAt])
 }
 
 model benefice {
@@ -43,6 +52,8 @@ model benefice {
     amount      Float
     description String
     createdAt   DateTime @default(now())
+
+    @@index([createdAt])
 }
 
 model Global {
