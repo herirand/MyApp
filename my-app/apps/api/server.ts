@@ -4,6 +4,7 @@ import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
+import fastifyCompress from "@fastify/compress";
 import authRoutes from "./routes/auth.routes";
 import adminRoutes from "./routes/admin.routes";
 import transactionRoutes from "./routes/students.routes";
@@ -26,6 +27,12 @@ app.register(fastifyCors, {
 
 app.register(fastifyJwt, {
 	secret: `${process.env.JWT_SECRETS}`
+})
+
+// Compression: compress responses larger than 1KB
+app.register(fastifyCompress, { 
+	threshold: 1024,
+	encodings: ['gzip', 'deflate']
 })
 
 //swagger config

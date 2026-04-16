@@ -5,11 +5,11 @@ async function payService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 
 		const TOTAL_ID = 1;
-		const total = await prisma.global.findMany({
+		const total = await prisma.global.findUnique({
 			where: { id: TOTAL_ID }
 		});
 
-		return reply.code(200).send(total);
+		return reply.code(200).send(total ? [total] : []);
 
 	} catch (error) {
 		return reply.status(500).send({

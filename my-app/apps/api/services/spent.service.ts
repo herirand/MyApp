@@ -6,7 +6,7 @@ async function spentService(request: FastifyRequest, reply: FastifyReply) {
 	try {
 
 		const SPENT_ID = 2;
-		const spent = await prisma.global.findMany({
+		const spent = await prisma.global.findUnique({
 			where: { id: SPENT_ID },
 		});
 
@@ -14,7 +14,7 @@ async function spentService(request: FastifyRequest, reply: FastifyReply) {
 			throw new AppError("spent not found", 404);
 		}
 
-		return reply.status(200).send(spent);
+		return reply.status(200).send([spent]);
 
 	} catch (error) {
 		if (error instanceof AppError) {
