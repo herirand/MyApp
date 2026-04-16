@@ -8,6 +8,8 @@ async function expenseMeService(request: FastifyRequest, reply: FastifyReply) {
 		const page = Math.max(1, parseInt((request.query as any)?.page) || 1);
 		const limit = Math.min(100, Math.max(1, parseInt((request.query as any)?.limit) || 20));
 
+		const total = await prisma.expense.count();
+
 		const expenses = await prisma.expense.findMany({
 			orderBy: {
 				createdAt: 'desc',
@@ -16,7 +18,15 @@ async function expenseMeService(request: FastifyRequest, reply: FastifyReply) {
 			take: limit,
 		});
 
-		return reply.code(200).send(expenses);
+		return reply.code(200).send({
+			data: expenses,
+			pagination: {
+				total,
+				page,
+				limit,
+				totalPages: Math.ceil(total / limit),
+			}
+		});
 
 	} catch (error) {
 		const errorMessage = error instanceof Error ? error.message : 'Internal server error';

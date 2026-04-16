@@ -49,15 +49,30 @@ export const expenseMeDto = {
 		},
 		response: {
 			200: {
-				type: 'array',
-				items: {
-					type: 'object',
-					properties: {
-						id: { type: 'number' },
-						amount: { type: 'number' },
-						description: { type: 'string' },
-						createdAt: { type: 'string' },
+				type: 'object',
+				properties: {
+					data: {
+						type: 'array',
+						items: {
+							type: 'object',
+							properties: {
+								id: { type: 'number' },
+								amount: { type: 'number' },
+								description: { type: 'string' },
+								createdAt: { type: 'string' },
+							}
+						}
+					},
+					pagination: {
+						type: 'object',
+						properties: {
+							total: { type: 'number' },
+							page: { type: 'number' },
+							limit: { type: 'number' },
+							totalPages: { type: 'number' },
+						}
 					}
+
 				}
 			},
 			401: {
@@ -98,3 +113,25 @@ export const payDto = {
 		}
 	}
 }
+
+export const studentPay = {
+	schema: {
+		tags: ['total des soldes'],
+		description: 'soldes de l etudiant',
+		response: {
+			200: {
+				type: 'object',
+				properties: {
+					balance: { type: 'number' }
+				}
+			},
+			500: {
+				type: 'object',
+				properties: {
+					error: { type: 'string' },
+				}
+			}
+		}
+	}
+}
+

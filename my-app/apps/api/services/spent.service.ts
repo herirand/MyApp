@@ -14,10 +14,7 @@ async function spentService(request: FastifyRequest, reply: FastifyReply) {
 			throw new AppError("spent not found", 404);
 		}
 
-		return reply.status(200).send({
-			success: true,
-			spent,
-		})
+		return reply.status(200).send(spent);
 
 	} catch (error) {
 		if (error instanceof AppError) {
