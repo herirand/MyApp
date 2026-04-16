@@ -2,12 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { StatisticsCard } from '@/components/ui/StatisticsCard';
+import { AdminStatisticsCard } from '@/components/ui/AdminStatisticsCard';
 
 interface Student {
 	id: string;
 	username: string;
 	email: string;
+}
+
+interface SearchState {
+	query: string;
+	selectedIndex: number;
 }
 
 interface FormData {
@@ -38,6 +43,7 @@ export default function AdminPage() {
 	const [loading, setLoading] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
 	const [showStudents, setShowStudents] = useState(false);
+	const [searchState, setSearchState] = useState<SearchState>({ query: '', selectedIndex: -1 });
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
@@ -56,6 +62,20 @@ export default function AdminPage() {
 		fetchStudents(token);
 		setLoading(false);
 	}, [router]);
+
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			const target = e.target as HTMLElement;
+			const isInput = target.closest('input[name="username"]');
+			const isDropdown = target.closest('.student-dropdown');
+			if (!isInput && !isDropdown) {
+				setShowStudents(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
 
 	const fetchStudents = async (token: string) => {
 		try {
@@ -200,6 +220,40 @@ export default function AdminPage() {
 	const selectStudent = (username: string) => {
 		setFormData({ ...formData, username });
 		setShowStudents(false);
+		setSearchState({ query: '', selectedIndex: -1 });
+	};
+
+	const getFilteredStudents = () => {
+		if (!formData.username.trim()) return students;
+		const query = formData.username.toLowerCase();
+		return students.filter(s => 
+			(s.username?.toLowerCase() || '').includes(query) || 
+			(s.email?.toLowerCase() || '').includes(query)
+		);
+	};
+
+	const handleStudentInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		const filtered = getFilteredStudents();
+		const maxIndex = filtered.length - 1;
+
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			setSearchState(prev => ({
+				...prev,
+				selectedIndex: prev.selectedIndex < maxIndex ? prev.selectedIndex + 1 : 0
+			}));
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			setSearchState(prev => ({
+				...prev,
+				selectedIndex: prev.selectedIndex > 0 ? prev.selectedIndex - 1 : maxIndex
+			}));
+		} else if (e.key === 'Enter' && searchState.selectedIndex >= 0) {
+			e.preventDefault();
+			selectStudent(filtered[searchState.selectedIndex].username);
+		} else if (e.key === 'Escape') {
+			setShowStudents(false);
+		}
 	};
 
 	if (loading) {
@@ -313,28 +367,48 @@ export default function AdminPage() {
 											value={formData.username}
 											onChange={handleChange}
 											onFocus={() => setShowStudents(true)}
+											onKeyDown={handleStudentInputKeyDown}
 											className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-											placeholder="Rechercher un étudiant..."
+											placeholder="Rechercher un étudiant (nom ou email)..."
 										/>
-										{showStudents && students.length > 0 && (
-											<div className="absolute z-10 w-full mt-2 bg-slate-800 border border-white/10 rounded-xl overflow-hidden shadow-xl">
-												<div className="max-h-48 overflow-y-auto">
-													{students.map((s) => (
+										{showStudents && getFilteredStudents().length > 0 && (
+											<div className="student-dropdown absolute z-10 w-full mt-2 bg-slate-800 border border-white/10 rounded-xl overflow-hidden shadow-2xl">
+												<div className="max-h-56 overflow-y-auto">
+													{getFilteredStudents().map((s, index) => (
 														<button
 															key={s.id}
 															type="button"
 															onClick={() => selectStudent(s.username)}
-															className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors flex items-center gap-3"
+															className={`w-full px-4 py-3 text-left transition-all flex items-center gap-3 ${
+																index === searchState.selectedIndex
+																	? 'bg-purple-500/30 border-l-2 border-purple-500'
+																	: 'hover:bg-white/10'
+															}`}
 														>
-															<div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center">
-																<span className="text-sm font-medium">{s.username[0].toUpperCase()}</span>
+															<div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+																<span className="text-sm font-medium text-white">{s.username[0].toUpperCase()}</span>
 															</div>
-															<div>
-																<p className="font-medium">{s.username}</p>
-																<p className="text-xs text-gray-400">{s.email}</p>
+															<div className="flex-1 min-w-0">
+																<p className="font-medium text-white truncate">{s.username}</p>
+																<p className="text-xs text-gray-400 truncate">{s.email}</p>
 															</div>
+															{index === searchState.selectedIndex && (
+																<svg className="w-4 h-4 text-purple-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+																	<path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+																</svg>
+															)}
 														</button>
 													))}
+												</div>
+											</div>
+										)}
+										{showStudents && getFilteredStudents().length === 0 && formData.username.trim() && (
+											<div className="student-dropdown absolute z-10 w-full mt-2 bg-slate-800 border border-white/10 rounded-xl overflow-hidden shadow-2xl">
+												<div className="px-4 py-6 text-center text-gray-400">
+													<svg className="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+													</svg>
+													<p className="text-sm">Aucun étudiant trouvé</p>
 												</div>
 											</div>
 										)}
@@ -524,7 +598,7 @@ export default function AdminPage() {
 					</div>
 
 				<div className="space-y-6">
-					<StatisticsCard />
+					<AdminStatisticsCard />
 
 						<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 animate-fadeIn stagger-3">
 							<h3 className="text-lg font-bold text-white mb-4">Actions rapides</h3>

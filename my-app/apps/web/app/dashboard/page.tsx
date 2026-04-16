@@ -37,6 +37,8 @@ export default function DashboardPage() {
 	const [expenses, setExpenses] = useState<Expense[]>([]);
 	const [benefices, setBenefices] = useState<Benefice[]>([]);
 	const [globalTotal, setGlobalTotal] = useState<number>(0);
+	const [totalSpent, setTotalSpent] = useState<number>(0);
+	const [userBalance, setUserBalance] = useState<number>(0);
 	const [activeTab, setActiveTab] = useState<'transactions' | 'expenses' | 'benefices'>('transactions');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(true);
@@ -70,7 +72,7 @@ export default function DashboardPage() {
 
 	const fetchData = async (token: string, page: number = 1, expPage: number = 1, benPage: number = 1) => {
 		try {
-			const [transRes, expenseRes, payRes, beneficeRes] = await Promise.all([
+			const [transRes, expenseRes, studentPayRes, payRes, spentRes, beneficeRes] = await Promise.all([
 				fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/me?page=${page}&limit=${ITEMS_PER_PAGE}`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
@@ -83,7 +85,19 @@ export default function DashboardPage() {
 						'Content-Type': 'application/json'
 					}
 				}),
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/pay`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				}),
 				fetch(`${process.env.NEXT_PUBLIC_API_URL}/pay`, {
+					headers: {
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				}),
+				fetch(`${process.env.NEXT_PUBLIC_API_URL}/spent`, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'application/json'
@@ -97,17 +111,23 @@ export default function DashboardPage() {
 				})
 			]);
 
-			if (transRes.ok) {
-				const transData = await transRes.json();
-				setTransactions(transData);
-				// Estimate total pages (API should return metadata, but we can estimate)
-				setTransactionTotalPages(Math.ceil(transData.length / ITEMS_PER_PAGE) || 1);
-			}
+		if (transRes.ok) {
+			const transData = await transRes.json();
+			// Nouvelle structure: { data: [...], pagination: {...} }
+			setTransactions(transData.data || []);
+			setTransactionTotalPages(transData.pagination?.totalPages || 1);
+		}
 
-			if (expenseRes.ok) {
-				const expenseData = await expenseRes.json();
-				setExpenses(expenseData);
-				setExpenseTotalPages(Math.ceil(expenseData.length > 0 ? Math.max(1, Math.ceil(100 / ITEMS_PER_PAGE)) : 1));
+		if (expenseRes.ok) {
+			const expenseData = await expenseRes.json();
+			// Nouvelle structure: { data: [...], pagination: {...} }
+			setExpenses(expenseData.data || []);
+			setExpenseTotalPages(expenseData.pagination?.totalPages || 1);
+		}
+
+			if (studentPayRes.ok) {
+				const studentPayData = await studentPayRes.json();
+				setUserBalance(studentPayData.balance || 0);
 			}
 
 			if (payRes.ok) {
@@ -117,11 +137,22 @@ export default function DashboardPage() {
 				}
 			}
 
-			if (beneficeRes.ok) {
-				const beneficeData = await beneficeRes.json();
-				setBenefices(beneficeData);
-				setBeneficeTotalPages(Math.ceil(beneficeData.length > 0 ? Math.max(1, Math.ceil(100 / ITEMS_PER_PAGE)) : 1));
+			if (spentRes.ok) {
+				const spentData = await spentRes.json();
+				// Gère le format de réponse du backend: { success: true, spent: [...] }
+				const spentArray = spentData?.spent || spentData || [];
+				const total = Array.isArray(spentArray) 
+					? spentArray.reduce((sum, item) => sum + (item.total || item.amount || 0), 0)
+					: spentData?.total || 0;
+				setTotalSpent(total);
 			}
+
+		if (beneficeRes.ok) {
+			const beneficeData = await beneficeRes.json();
+			// Nouvelle structure: { data: [...], pagination: {...} }
+			setBenefices(beneficeData.data || []);
+			setBeneficeTotalPages(beneficeData.pagination?.totalPages || 1);
+		}
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Erreur de chargement';
 			setError(errorMessage);
@@ -187,12 +218,6 @@ export default function DashboardPage() {
 		});
 	};
 
-	const totalIncome = transactions
-		.filter(t => t.status === 'CONFIRMED')
-		.reduce((sum, t) => sum + t.amount, 0);
-
-	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-
 	if (loading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -256,10 +281,10 @@ export default function DashboardPage() {
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 								</svg>
 							</div>
-							<span className="text-emerald-400 text-sm font-medium">Revenus</span>
+							<span className="text-emerald-400 text-sm font-medium">Solde Utilisateur</span>
 						</div>
-						<p className="text-3xl font-bold text-white">{totalIncome.toFixed(2)} €</p>
-						<p className="text-emerald-400/70 text-sm mt-1">{transactions.filter(t => t.status === 'CONFIRMED').length} transactions</p>
+						<p className="text-3xl font-bold text-white">{userBalance.toFixed(2)} €</p>
+						<p className="text-emerald-400/70 text-sm mt-1">Votre solde personnel</p>
 					</div>
 
 					<div className="bg-gradient-to-br from-red-500/20 to-pink-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-2">
@@ -269,10 +294,10 @@ export default function DashboardPage() {
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
 								</svg>
 							</div>
-							<span className="text-red-400 text-sm font-medium">Dépenses</span>
+							<span className="text-red-400 text-sm font-medium">Dépenses Totales</span>
 						</div>
-						<p className="text-3xl font-bold text-white">{totalExpenses.toFixed(2)} €</p>
-						<p className="text-red-400/70 text-sm mt-1">{expenses.length} dépenses</p>
+						<p className="text-3xl font-bold text-white">{totalSpent.toFixed(2)} €</p>
+						<p className="text-red-400/70 text-sm mt-1">Dépenses globales de l&apos;admin</p>
 					</div>
 
 					<div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/10 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-3">
@@ -282,10 +307,10 @@ export default function DashboardPage() {
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
 								</svg>
 							</div>
-							<span className="text-purple-400 text-sm font-medium">Solde total</span>
+							<span className="text-purple-400 text-sm font-medium">Solde Global</span>
 						</div>
 						<p className="text-3xl font-bold text-white">{globalTotal.toFixed(2)} €</p>
-						<p className="text-purple-400/70 text-sm mt-1">Total communauté</p>
+						<p className="text-purple-400/70 text-sm mt-1">Total de la communauté</p>
 					</div>
 				</div>
 
