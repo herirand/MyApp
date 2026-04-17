@@ -132,10 +132,6 @@ app.get('/', async () => ({
 	status: 'ok',
 	service: 'api',
 }));
-
-app.head('/', async (_, reply) => {
-	reply.code(200).send();
-});
 //=================SWAGGER
 
 app.register(authRoutes, { prefix: '/auth' });
