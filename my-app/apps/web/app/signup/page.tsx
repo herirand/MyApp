@@ -134,40 +134,40 @@ export default function SignupPage() {
 	];
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden py-8">
+		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden py-4 px-4 sm:py-8">
 			<div className="absolute inset-0" style={{
 				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)`,
 				backgroundSize: '30px 30px',
 			}} />
 
-			<div className="absolute top-20 right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl" />
-			<div className="absolute bottom-20 left-20 w-96 bg-indigo-500/20 rounded-full blur-3xl" />
+			<div className="hidden sm:block absolute top-20 right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl" />
+			<div className="hidden sm:block absolute bottom-20 left-20 w-96 bg-indigo-500/20 rounded-full blur-3xl" />
 
-			<div className="relative z-10 w-full max-w-md px-4">
+			<div className="relative z-10 w-full max-w-md px-0 sm:px-4">
 				<div className="animate-fadeIn">
-					<Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 justify-center">
-						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 md:mb-8 justify-center text-sm md:text-base">
+						<svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 						</svg>
 						Retour à l&apos;accueil
 					</Link>
 				</div>
 
-				<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl animate-fadeIn stagger-1">
-					<div className="text-center mb-8">
-						<div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-							<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl animate-fadeIn stagger-1">
+					<div className="text-center mb-6 sm:mb-8">
+						<div className="w-14 sm:w-16 h-14 sm:h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+							<svg className="w-7 sm:w-8 h-7 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
 							</svg>
 						</div>
-						<h2 className="text-3xl font-bold text-white">Créer un compte</h2>
-						<p className="text-gray-400 mt-2">Rejoignez-nous ! Remplissez le formulaire ci-dessous</p>
+						<h2 className="text-2xl sm:text-3xl font-bold text-white">Créer un compte</h2>
+						<p className="text-gray-400 mt-2 text-sm sm:text-base">Rejoignez-nous ! Remplissez le formulaire ci-dessous</p>
 					</div>
 
-					<form onSubmit={handleSignup} className="space-y-4">
+					<form onSubmit={handleSignup} className="space-y-3 sm:space-y-4">
 						{errors.submit && (
-							<div className="p-4 bg-red-500/20 border border-red-500/50 text-red-200 rounded-xl text-sm flex items-center gap-3">
-								<svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+							<div className="p-3 sm:p-4 bg-red-500/20 border border-red-500/50 text-red-200 rounded-lg sm:rounded-xl text-xs sm:text-sm flex items-center gap-3">
+								<svg className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 									<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
 								</svg>
 								{errors.submit}

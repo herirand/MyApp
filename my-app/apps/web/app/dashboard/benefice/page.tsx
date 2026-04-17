@@ -94,51 +94,51 @@ export default function BeneficePage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 relative">
+		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-3 md:p-6 relative">
 			<div className="absolute inset-0 -z-10" style={{
 				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
 				backgroundSize: '40px 40px',
 			}} />
 
 			<div className="relative max-w-6xl mx-auto">
-				<header className="mb-8 animate-fadeIn">
+				<header className="mb-6 md:mb-8 animate-fadeIn">
 					<button
 						onClick={() => router.push('/dashboard')}
-						className="mb-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+						className="mb-3 md:mb-4 flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm md:text-base"
 					>
-						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 						</svg>
-						Retour au tableau de bord
+						Retour
 					</button>
-					<h1 className="text-3xl font-bold text-white">Bénéfices</h1>
-					<p className="text-gray-400 mt-1">Historique des bénéfices de la communauté</p>
+					<h1 className="text-2xl md:text-3xl font-bold text-white">Bénéfices</h1>
+					<p className="text-gray-400 mt-1 text-sm md:text-base">Historique des bénéfices de la communauté</p>
 				</header>
 
 				{error && (
-					<div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl flex items-center gap-3">
-						<svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+					<div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl flex items-center gap-3 text-sm md:text-base">
+						<svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 							<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
 						</svg>
 						{error}
 					</div>
 				)}
 
-				<div className="bg-gradient-to-br from-emerald-500/20 to-green-500/10 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-6 mb-8 animate-fadeIn">
+				<div className="bg-gradient-to-br from-emerald-500/20 to-green-500/10 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-4 md:p-6 mb-6 md:mb-8 animate-fadeIn">
 					<div className="flex items-center gap-3 mb-2">
-						<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-							<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<div className="w-9 md:w-10 h-9 md:h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+							<svg className="w-4 md:w-5 h-4 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 							</svg>
 						</div>
-						<span className="text-emerald-400 text-sm font-medium">Total des bénéfices</span>
+						<span className="text-emerald-400 text-xs md:text-sm font-medium">Total des bénéfices</span>
 					</div>
-					<p className="text-4xl font-bold text-white">{totalBenefice.toFixed(2)} €</p>
-					<p className="text-emerald-400/70 text-sm mt-1">{benefices.length} transactions</p>
+					<p className="text-2xl md:text-4xl font-bold text-white">{totalBenefice.toFixed(2)} €</p>
+					<p className="text-emerald-400/70 text-xs md:text-sm mt-1">{benefices.length} transactions</p>
 				</div>
 
 				<div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden animate-fadeIn">
-					<div className="p-6">
+					<div className="p-4 md:p-6">
 						{benefices.length === 0 ? (
 							<div className="text-center py-12">
 								<div className="w-16 h-16 bg-white/5 rounded-2xl mx-auto mb-4 flex items-center justify-center">
@@ -154,11 +154,11 @@ export default function BeneficePage() {
 								{benefices.map((b, index) => (
 									<div
 										key={b.id}
-										className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
+										className="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn gap-3 md:gap-0"
 										style={{ animationDelay: `${index * 50}ms` }}
 									>
 										<div className="flex items-center gap-4">
-											<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+											<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
 												<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 												</svg>

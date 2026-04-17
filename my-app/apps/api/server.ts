@@ -1,7 +1,8 @@
 import * as dotenv from "dotenv";
 import Fastify from "fastify";
+import path from "node:path";
 import fastifySwagger from "@fastify/swagger"
-import fastifySwaggerUi from "@fastify/swagger-ui"
+import fastifyStatic from "@fastify/static";
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCompress from "@fastify/compress";
@@ -54,9 +55,50 @@ app.register(fastifySwagger, {
 	}
 });
 
-app.register(fastifySwaggerUi, {
-	routePrefix: '/api-docs'
+app.register(fastifyStatic, {
+	root: path.join(__dirname, '../../node_modules/@fastify/swagger-ui/static'),
+	prefix: '/api-docs/static/',
+	decorateReply: false,
 });
+
+app.get('/api-docs/json', async () => app.swagger());
+
+app.get('/api-docs', async (_, reply) => {
+	reply.type('text/html; charset=utf-8').send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Swagger UI</title>
+  <link rel="stylesheet" href="/api-docs/static/swagger-ui.css" />
+  <link rel="stylesheet" href="/api-docs/static/index.css" />
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="/api-docs/static/swagger-ui-bundle.js"></script>
+  <script src="/api-docs/static/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function () {
+      window.ui = SwaggerUIBundle({
+        url: '/api-docs/json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset,
+        ],
+        layout: 'StandaloneLayout'
+      });
+    };
+  </script>
+</body>
+</html>`);
+});
+
+app.get('/api-docs/', async (_, reply) => {
+	reply.redirect('/api-docs');
+});
+//=================SWAGGER
 
 app.register(authRoutes, { prefix: '/auth' });
 app.register(transactionRoutes);

@@ -320,8 +320,8 @@ export default function DashboardPage() {
 					</div>
 				)}
 
-				<div className="grid md:grid-cols-3 gap-6 mb-8">
-					<div className="bg-gradient-to-br from-emerald-500/20 to-green-500/10 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-1">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+					<div className="bg-gradient-to-br from-emerald-500/20 to-green-500/10 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-4 md:p-6 card-hover animate-fadeIn stagger-1">
 						<div className="flex items-center gap-3 mb-2">
 							<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
 								<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -330,11 +330,11 @@ export default function DashboardPage() {
 							</div>
 							<span className="text-emerald-400 text-sm font-medium">Solde Utilisateur</span>
 						</div>
-						<p className="text-3xl font-bold text-white">{userBalance.toFixed(2)} €</p>
+						<p className="text-xl md:text-3xl font-bold text-white">{userBalance.toFixed(2)} €</p>
 						<p className="text-emerald-400/70 text-sm mt-1">Votre solde personnel</p>
 					</div>
 
-					<div className="bg-gradient-to-br from-red-500/20 to-pink-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-2">
+					<div className="bg-gradient-to-br from-red-500/20 to-pink-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-4 md:p-6 card-hover animate-fadeIn stagger-2">
 						<div className="flex items-center gap-3 mb-2">
 							<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
 								<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -343,11 +343,11 @@ export default function DashboardPage() {
 							</div>
 							<span className="text-red-400 text-sm font-medium">Dépenses Totales</span>
 						</div>
-						<p className="text-3xl font-bold text-white">{totalSpent.toFixed(2)} €</p>
+						<p className="text-xl md:text-3xl font-bold text-white">{totalSpent.toFixed(2)} €</p>
 						<p className="text-red-400/70 text-sm mt-1">Dépenses globales de l&apos;admin</p>
 					</div>
 
-					<div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/10 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-6 card-hover animate-fadeIn stagger-3">
+					<div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/10 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-4 md:p-6 card-hover animate-fadeIn stagger-3">
 						<div className="flex items-center gap-3 mb-2">
 							<div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
 								<svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -356,24 +356,25 @@ export default function DashboardPage() {
 							</div>
 							<span className="text-purple-400 text-sm font-medium">Solde Global</span>
 						</div>
-						<p className="text-3xl font-bold text-white">{globalTotal.toFixed(2)} €</p>
+						<p className="text-xl md:text-3xl font-bold text-white">{globalTotal.toFixed(2)} €</p>
 						<p className="text-purple-400/70 text-sm mt-1">Total de la communauté</p>
 					</div>
 				</div>
 
 				<div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden animate-fadeIn stagger-4">
-					<div className="flex border-b border-white/10">
+					<div className="flex border-b border-white/10 overflow-x-auto">
 						<button
 							onClick={() => setActiveTab('transactions')}
-							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${activeTab === 'transactions' ? 'text-white' : 'text-gray-400 hover:text-white'
+							className={`flex-1 min-w-max md:flex-1 py-3 md:py-4 px-3 md:px-6 text-xs md:text-sm font-medium transition-all relative whitespace-nowrap ${activeTab === 'transactions' ? 'text-white' : 'text-gray-400 hover:text-white'
 								}`}
 						>
-							<span className="flex items-center justify-center gap-2">
-								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<span className="flex items-center justify-center gap-1 md:gap-2">
+								<svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
 								</svg>
-								Transactions
-								<span className="ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{transactions.length}</span>
+								<span className="hidden sm:inline">Transactions</span>
+								<span className="sm:hidden">Trans</span>
+								<span className="hidden md:inline ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{transactions.length}</span>
 							</span>
 							{activeTab === 'transactions' && (
 								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
@@ -381,15 +382,16 @@ export default function DashboardPage() {
 						</button>
 						<button
 							onClick={() => setActiveTab('expenses')}
-							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${activeTab === 'expenses' ? 'text-white' : 'text-gray-400 hover:text-white'
+							className={`flex-1 min-w-max md:flex-1 py-3 md:py-4 px-3 md:px-6 text-xs md:text-sm font-medium transition-all relative whitespace-nowrap ${activeTab === 'expenses' ? 'text-white' : 'text-gray-400 hover:text-white'
 								}`}
 						>
-							<span className="flex items-center justify-center gap-2">
-								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<span className="flex items-center justify-center gap-1 md:gap-2">
+								<svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
 								</svg>
-								Dépenses
-								<span className="ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{expenses.length}</span>
+								<span className="hidden sm:inline">Dépenses</span>
+								<span className="sm:hidden">Dépense</span>
+								<span className="hidden md:inline ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{expenses.length}</span>
 							</span>
 							{activeTab === 'expenses' && (
 								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
@@ -397,15 +399,16 @@ export default function DashboardPage() {
 						</button>
 						<button
 							onClick={() => setActiveTab('benefices')}
-							className={`flex-1 py-4 px-6 text-sm font-medium transition-all relative ${activeTab === 'benefices' ? 'text-white' : 'text-gray-400 hover:text-white'
+							className={`flex-1 min-w-max md:flex-1 py-3 md:py-4 px-3 md:px-6 text-xs md:text-sm font-medium transition-all relative whitespace-nowrap ${activeTab === 'benefices' ? 'text-white' : 'text-gray-400 hover:text-white'
 								}`}
 						>
-							<span className="flex items-center justify-center gap-2">
-								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<span className="flex items-center justify-center gap-1 md:gap-2">
+								<svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 								</svg>
-								Bénéfices
-								<span className="ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{benefices.length}</span>
+								<span className="hidden sm:inline">Bénéfices</span>
+								<span className="sm:hidden">Bénéf</span>
+								<span className="hidden md:inline ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{benefices.length}</span>
 							</span>
 							{activeTab === 'benefices' && (
 								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
@@ -413,7 +416,7 @@ export default function DashboardPage() {
 						</button>
 					</div>
 
-					<div className="p-6">
+					<div className="p-4 md:p-6">
 						{activeTab === 'transactions' && (
 							transactions.length === 0 ? (
 								<div className="text-center py-12">
@@ -430,11 +433,11 @@ export default function DashboardPage() {
 									{transactions.map((t, index) => (
 										<div
 											key={t.id}
-											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
+											className="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn gap-3 md:gap-0"
 											style={{ animationDelay: `${index * 50}ms` }}
 										>
 											<div className="flex items-center gap-4">
-												<div className={`w-10 h-10 rounded-xl flex items-center justify-center ${t.status === 'CONFIRMED' ? 'bg-emerald-500/20' : t.status === 'REJECTED' ? 'bg-red-500/20' : 'bg-yellow-500/20'
+												<div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${t.status === 'CONFIRMED' ? 'bg-emerald-500/20' : t.status === 'REJECTED' ? 'bg-red-500/20' : 'bg-yellow-500/20'
 													}`}>
 													{t.status === 'CONFIRMED' ? (
 														<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -451,7 +454,7 @@ export default function DashboardPage() {
 													<p className="text-gray-500 text-sm">{formatDate(t.createdAt)}</p>
 												</div>
 											</div>
-											<div className="text-right">
+											<div className="text-right md:text-right">
 												<p className="text-white font-bold text-lg">+{t.amount.toFixed(2)} €</p>
 												<span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(t.status)}`}>
 													{t.status}
@@ -479,11 +482,11 @@ export default function DashboardPage() {
 									{expenses.map((e, index) => (
 										<div
 											key={e.id}
-											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
+											className="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn gap-3 md:gap-0"
 											style={{ animationDelay: `${index * 50}ms` }}
 										>
 											<div className="flex items-center gap-4">
-												<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
+												<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
 													<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
 													</svg>
@@ -518,11 +521,11 @@ export default function DashboardPage() {
 									{benefices.map((b, index) => (
 										<div
 											key={b.id}
-											className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn"
+											className="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-transparent hover:border-white/10 animate-slideIn gap-3 md:gap-0"
 											style={{ animationDelay: `${index * 50}ms` }}
 										>
 											<div className="flex items-center gap-4">
-												<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+												<div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
 													<svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 													</svg>
