@@ -41,7 +41,7 @@ app.register(fastifySwagger, {
 			description: 'project perso',
 			version: '1.0.0',
 		},
-		host: 'localhost:3001',
+		host: `${process.env.URL_SWAGGER}`,
 		schemes: ['http'],
 		securityDefinitions: {
 			bearerAuth: {
