@@ -12,7 +12,8 @@
 		"dev:api": "npm run dev -w @myapp/api",
 		"build": "npm run build -w @myapp/web",
 		"start": "npm run start -w @myapp/web",
-		"lint": "npm run lint -w @myapp/web"
+		"lint": "npm run lint -w @myapp/web",
+		"postinstall": "prisma generate --schema packages/db/prisma/schema.prisma"
 	},
 	"dependencies": {
 		"@fastify/cors": "^11.2.0",
