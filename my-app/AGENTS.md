@@ -18,11 +18,12 @@ Monorepo with npm workspaces:
 - **Next.js version mismatch**: Root `package.json` pins 16.2.3 but `apps/web/package.json` pins 15.x. The workspace version (15.x) takes precedence in web app.
 - **No test suite**: No tests defined; no `npm test` script.
 - **Prisma migrations**: Run `npx prisma migrate deploy` from `packages/db/` directory (uses root `.env`).
-- **API environment loading**: `apps/api/server.ts:11` calls `dotenv.config()` to read `apps/api/.env`.
+- **API environment loading**: `apps/api/server.ts:12` calls `dotenv.config()` to read `apps/api/.env`.
 - **Web environment loading**: Next.js built-in; reads `apps/web/.env.local`, vars must have `NEXT_PUBLIC_` prefix for client-side access.
 - **CORS uses env vars**: API allows requests from `${URL_FRONT}` and `${URL_SWAGGER}` (set in `apps/api/.env`, not hardcoded).
-- **JWT secret from env**: API reads `JWT_SECRETS` from `apps/api/.env` (set in `server.ts:28`).
+- **JWT secret from env**: API reads `JWT_SECRETS` from `apps/api/.env` (set in `server.ts:26`).
 - **Swagger UI**: Available at `http://localhost:3001/api-docs` when API running.
+- **Current npm audit status**: 2 vulnerabilities (1 moderate, 1 high) in Fastify 5.3.2–5.8.4 and @fastify/static 8.0.0–9.1.0. Run `npm audit fix` to resolve.
 
 ## Environment Variables
 | File | Key Variables | Usage |
@@ -37,6 +38,4 @@ Monorepo with npm workspaces:
 - Frontend: Set `NEXT_PUBLIC_API_URL` to your backend URL in platform env (Vercel, Netlify, etc.).
 
 ## Known Security Issues
-See `SECURITY.md` for npm audit findings and fixes. Two vulnerabilities exist:
-1. `fast-jwt@6.1.0` (via `@fastify/jwt`) — CRITICAL JWT validation bypass. Fix: `npm audit fix`
-2. `next` (16.2.1/15.5.14) — HIGH DoS risk. Fix: upgrade to 16.2.3 or 15.5.15+
+Run `npm audit` to check current status. As of last audit, Fastify and @fastify/static have disclosed vulnerabilities. Fix with `npm audit fix`.
