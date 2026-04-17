@@ -12,19 +12,48 @@ import transactionRoutes from "./routes/students.routes";
 
 dotenv.config();
 
+const port = process.env.PORT || "3001";
+const jwtSecret = process.env.JWT_SECRETS || (process.env.NODE_ENV !== "production" ? "dev-only-secret-change-me" : undefined);
+
+if (!jwtSecret) {
+	console.error("Missing JWT_SECRETS environment variable");
+	process.exit(1);
+}
+
+const fallbackSwaggerUrl = `http://localhost:${port}`;
+const swaggerUrl = process.env.URL_SWAGGER || fallbackSwaggerUrl;
+
+let swaggerHost = `localhost:${port}`;
+let swaggerScheme: "http" | "https" = "http";
+
+try {
+	const parsed = new URL(swaggerUrl);
+	swaggerHost = parsed.host;
+	swaggerScheme = parsed.protocol === "https:" ? "https" : "http";
+} catch {
+	// Keep local fallback values when URL_SWAGGER is invalid.
+}
+
+const allowedOrigins = [
+	process.env.URL_FRONT,
+	process.env.URL_SWAGGER,
+	"http://localhost:3000",
+	"http://127.0.0.1:3000",
+].filter((value): value is string => Boolean(value));
+
 const app = Fastify({
 	logger: true,
 });
 
 //cors
 app.register(fastifyCors, {
-	origin: [`${process.env.URL_FRONT}`, `${process.env.URL_SWAGGER}`],
+	origin: allowedOrigins,
 	credentials: true,
 	methods: ["GET", "POST", "DELETE", "PUT"],
 });
 
 app.register(fastifyJwt, {
-	secret: `${process.env.JWT_SECRETS}`
+	secret: jwtSecret,
 })
 
 // Compression: compress responses larger than 1KB
@@ -35,16 +64,16 @@ app.register(fastifyCompress, {
 
 //swagger config
 app.register(fastifySwagger, {
-	swagger: {
-		info: {
-			title: 'My-app',
-			description: 'project perso',
-			version: '1.0.0',
-		},
-		host: `${process.env.URL_SWAGGER}`,
-		schemes: ['http'],
-		securityDefinitions: {
-			bearerAuth: {
+		swagger: {
+			info: {
+				title: 'My-app',
+				description: 'project perso',
+				version: '1.0.0',
+			},
+			host: swaggerHost,
+			schemes: [swaggerScheme],
+			securityDefinitions: {
+				bearerAuth: {
 				type: 'apiKey',
 				name: 'Authorization',
 				in: 'header',
@@ -106,9 +135,8 @@ app.register(adminRoutes);
 
 const start = async () => {
 	try {
-		const port = process.env.PORT;
-		await app.listen({ port: parseInt(port || '3001'), host: '0.0.0.0' });
-		console.log(`serveur runing in port : ${port || '3001'}`);
+		await app.listen({ port: parseInt(port, 10), host: '0.0.0.0' });
+		console.log(`serveur runing in port : ${port}`);
 	} catch (err) {
 		app.log.error(err);
 		console.log(`serveur exiting`);
