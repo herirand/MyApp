@@ -14,7 +14,7 @@
 		"start": "npm run start -w @myapp/web",
 		"lint": "npm run lint -w @myapp/web",
 		"prisma:generate": "prisma generate --schema packages/db/prisma/schema.prisma",
-		"postinstall": "command -v prisma >/dev/null 2>&1 && npm run prisma:generate || echo 'Skipping Prisma generate (prisma CLI not installed in this environment)'"
+		"postinstall": "echo 'Skipping root postinstall (frontend deploy target)'"
 	},
 	"dependencies": {
 		"@fastify/cors": "^11.2.0",
