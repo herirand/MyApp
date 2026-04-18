@@ -54,24 +54,7 @@ export default function DashboardPage() {
 	const [transactionTotalPages, setTransactionTotalPages] = useState(1);
 	const ITEMS_PER_PAGE = 10;
 
-	useEffect(() => {
-		const token = localStorage.getItem('token');
-		const role = localStorage.getItem('role');
-
-		if (!token) {
-			router.push('/login');
-			return;
-		}
-
-		if (role === 'ADMIN') {
-			router.push('/admin');
-			return;
-		}
-
-		fetchData(token);
-	}, [router]);
-
-	const fetchData = async (token: string, page: number = 1, expPage: number = 1, benPage: number = 1) => {
+	async function fetchData(token: string, page: number = 1, expPage: number = 1, benPage: number = 1) {
 		try {
 			// PHASE 1: Charger les statistiques en priorité (cartes)
 			const [studentPayRes, payRes, spentRes] = await Promise.all([
@@ -164,7 +147,26 @@ export default function DashboardPage() {
 			setError(errorMessage);
 			setLoading(false);
 		}
-	};
+	}
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		const role = localStorage.getItem('role');
+
+		if (!token) {
+			router.push('/login');
+			return;
+		}
+
+		if (role === 'ADMIN') {
+			router.push('/admin');
+			return;
+		}
+
+		setTimeout(() => {
+			void fetchData(token);
+		}, 0);
+	}, [router]);
 
 	const handleRefresh = async () => {
 		setRefreshing(true);

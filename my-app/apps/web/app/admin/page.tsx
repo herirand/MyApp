@@ -46,24 +46,6 @@ export default function AdminPage() {
 	const [searchState, setSearchState] = useState<SearchState>({ query: '', selectedIndex: -1 });
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-		const role = localStorage.getItem('role');
-
-		if (!token) {
-			router.push('/login');
-			return;
-		}
-
-		if (role !== 'ADMIN') {
-			router.push('/dashboard');
-			return;
-		}
-
-		fetchStudents(token);
-		setLoading(false);
-	}, [router]);
-
-	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
 			const target = e.target as HTMLElement;
 			const isInput = target.closest('input[name="username"]');
@@ -77,7 +59,7 @@ export default function AdminPage() {
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
-	const fetchStudents = async (token: string) => {
+	async function fetchStudents(token: string) {
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student`, {
 				headers: {
@@ -91,7 +73,28 @@ export default function AdminPage() {
 		} catch (err) {
 			console.error('Error fetching students:', err);
 		}
-	};
+	}
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		const role = localStorage.getItem('role');
+
+		if (!token) {
+			router.push('/login');
+			return;
+		}
+
+		if (role !== 'ADMIN') {
+			router.push('/dashboard');
+			return;
+		}
+
+		setTimeout(() => {
+			void fetchStudents(token).finally(() => {
+				setLoading(false);
+			});
+		}, 0);
+	}, [router]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

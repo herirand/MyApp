@@ -27,24 +27,7 @@ export default function DeleteStudentPage() {
 	const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-	useEffect(() => {
-		const storedToken = localStorage.getItem('token');
-		const role = localStorage.getItem('role');
-
-		if (!storedToken) {
-			router.push('/login');
-			return;
-		}
-
-		if (role !== 'ADMIN') {
-			router.push('/dashboard');
-			return;
-		}
-
-		fetchStudents(storedToken);
-	}, [router]);
-
-	const fetchStudents = async (token: string) => {
+	async function fetchStudents(token: string) {
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student`, {
 				method: 'GET',
@@ -61,7 +44,26 @@ export default function DeleteStudentPage() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}
+
+	useEffect(() => {
+		const storedToken = localStorage.getItem('token');
+		const role = localStorage.getItem('role');
+
+		if (!storedToken) {
+			router.push('/login');
+			return;
+		}
+
+		if (role !== 'ADMIN') {
+			router.push('/dashboard');
+			return;
+		}
+
+		setTimeout(() => {
+			void fetchStudents(storedToken);
+		}, 0);
+	}, [router]);
 
 	const handleSelectStudent = (student: Student) => {
 		setFormData({

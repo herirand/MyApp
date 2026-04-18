@@ -19,11 +19,7 @@ export function StatisticsCard() {
 		error: null,
 	});
 
-	useEffect(() => {
-		fetchStatistics();
-	}, []);
-
-	const fetchStatistics = async () => {
+	async function fetchStatistics() {
 		const token = localStorage.getItem('token');
 		if (!token) return;
 
@@ -71,7 +67,13 @@ export function StatisticsCard() {
 				error: errorMessage,
 			}));
 		}
-	};
+	}
+
+	useEffect(() => {
+		setTimeout(() => {
+			void fetchStatistics();
+		}, 0);
+	}, []);
 
 	// Rafraîchir les statistiques à intervalles réguliers
 	useEffect(() => {

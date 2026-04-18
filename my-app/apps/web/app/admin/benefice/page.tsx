@@ -29,24 +29,7 @@ export default function AdminBeneficePage() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 
-	useEffect(() => {
-		const token = localStorage.getItem('token');
-		const role = localStorage.getItem('role');
-
-		if (!token) {
-			router.push('/login');
-			return;
-		}
-
-		if (role !== 'ADMIN') {
-			router.push('/dashboard');
-			return;
-		}
-
-		fetchBenefices(token, 1);
-	}, [router]);
-
-	const fetchBenefices = async (token: string, page: number) => {
+	async function fetchBenefices(token: string, page: number) {
 		try {
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/benefice?page=${page}&limit=${ITEMS_PER_PAGE}`,
@@ -68,7 +51,26 @@ export default function AdminBeneficePage() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		const role = localStorage.getItem('role');
+
+		if (!token) {
+			router.push('/login');
+			return;
+		}
+
+		if (role !== 'ADMIN') {
+			router.push('/dashboard');
+			return;
+		}
+
+		setTimeout(() => {
+			void fetchBenefices(token, 1);
+		}, 0);
+	}, [router]);
 
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page);

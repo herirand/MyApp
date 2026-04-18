@@ -40,7 +40,9 @@ export default function ChangePasswordPage() {
 			return;
 		}
 
-		setLoading(false);
+		setTimeout(() => {
+			setLoading(false);
+		}, 0);
 	}, [router]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

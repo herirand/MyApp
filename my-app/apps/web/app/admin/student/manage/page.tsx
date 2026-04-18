@@ -26,24 +26,7 @@ export default function StudentManagePage() {
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 
-	useEffect(() => {
-		const storedToken = localStorage.getItem('token');
-		const role = localStorage.getItem('role');
-
-		if (!storedToken) {
-			router.push('/login');
-			return;
-		}
-
-		if (role !== 'ADMIN') {
-			router.push('/dashboard');
-			return;
-		}
-
-		fetchStudents(storedToken);
-	}, [router]);
-
-	const fetchStudents = async (token: string) => {
+	async function fetchStudents(token: string) {
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student`, {
 				method: 'GET',
@@ -60,7 +43,26 @@ export default function StudentManagePage() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}
+
+	useEffect(() => {
+		const storedToken = localStorage.getItem('token');
+		const role = localStorage.getItem('role');
+
+		if (!storedToken) {
+			router.push('/login');
+			return;
+		}
+
+		if (role !== 'ADMIN') {
+			router.push('/dashboard');
+			return;
+		}
+
+		setTimeout(() => {
+			void fetchStudents(storedToken);
+		}, 0);
+	}, [router]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

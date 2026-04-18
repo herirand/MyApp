@@ -29,24 +29,7 @@ export default function AdminExpensesPage() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 
-	useEffect(() => {
-		const token = localStorage.getItem('token');
-		const role = localStorage.getItem('role');
-
-		if (!token) {
-			router.push('/login');
-			return;
-		}
-
-		if (role !== 'ADMIN') {
-			router.push('/dashboard');
-			return;
-		}
-
-		fetchExpenses(token, 1);
-	}, [router]);
-
-	const fetchExpenses = async (token: string, page: number) => {
+	async function fetchExpenses(token: string, page: number) {
 		try {
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/expense?page=${page}&limit=${ITEMS_PER_PAGE}`,
@@ -68,7 +51,26 @@ export default function AdminExpensesPage() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		const role = localStorage.getItem('role');
+
+		if (!token) {
+			router.push('/login');
+			return;
+		}
+
+		if (role !== 'ADMIN') {
+			router.push('/dashboard');
+			return;
+		}
+
+		setTimeout(() => {
+			void fetchExpenses(token, 1);
+		}, 0);
+	}, [router]);
 
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page);
