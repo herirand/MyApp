@@ -261,9 +261,9 @@ export default function AdminPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+			<div className="min-h-screen flex items-center justify-center app-shell-bg">
 				<div className="text-white flex flex-col items-center gap-4">
-					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+					<div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 					<p>Chargement...</p>
 				</div>
 			</div>
@@ -271,11 +271,8 @@ export default function AdminPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 relative">
-			<div className="absolute inset-0 -z-10" style={{
-				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
-				backgroundSize: '40px 40px',
-			}} />
+		<div className="min-h-screen app-shell-bg p-6 relative">
+			<div className="absolute inset-0 -z-10 app-shell-grid" />
 
 			<div className="relative max-w-6xl mx-auto">
 			<header className="flex justify-between items-center mb-8 animate-fadeIn">
@@ -297,7 +294,7 @@ export default function AdminPage() {
 				<div className="grid md:grid-cols-2 gap-6 mb-8">
 					<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 animate-fadeIn stagger-1">
 						<div className="flex items-center gap-3 mb-6">
-							<div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+							<div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-sky-500 rounded-xl flex items-center justify-center">
 								<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
 								</svg>
@@ -314,7 +311,7 @@ export default function AdminPage() {
 							>
 								Transaction
 								{activeTab === 'transaction' && (
-									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-sky-500" />
 								)}
 							</button>
 							<button
@@ -325,7 +322,7 @@ export default function AdminPage() {
 							>
 								Dépense
 								{activeTab === 'expense' && (
-									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-sky-500" />
 								)}
 							</button>
 							<button
@@ -336,7 +333,7 @@ export default function AdminPage() {
 							>
 								Bénéfice
 								{activeTab === 'benefice' && (
-									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+									<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-sky-500" />
 								)}
 							</button>
 						</div>
@@ -371,7 +368,7 @@ export default function AdminPage() {
 											onChange={handleChange}
 											onFocus={() => setShowStudents(true)}
 											onKeyDown={handleStudentInputKeyDown}
-											className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+											className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
 											placeholder="Rechercher un étudiant (nom ou email)..."
 										/>
 										{showStudents && getFilteredStudents().length > 0 && (
@@ -384,11 +381,11 @@ export default function AdminPage() {
 															onClick={() => selectStudent(s.username)}
 															className={`w-full px-4 py-3 text-left transition-all flex items-center gap-3 ${
 																index === searchState.selectedIndex
-																	? 'bg-purple-500/30 border-l-2 border-purple-500'
+											? 'bg-cyan-500/30 border-l-2 border-cyan-500'
 																	: 'hover:bg-white/10'
 															}`}
 														>
-															<div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+													<div className="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center flex-shrink-0">
 																<span className="text-sm font-medium text-white">{s.username[0].toUpperCase()}</span>
 															</div>
 															<div className="flex-1 min-w-0">
@@ -396,7 +393,7 @@ export default function AdminPage() {
 																<p className="text-xs text-gray-400 truncate">{s.email}</p>
 															</div>
 															{index === searchState.selectedIndex && (
-																<svg className="w-4 h-4 text-purple-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+														<svg className="w-4 h-4 text-cyan-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 																	<path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
 																</svg>
 															)}
@@ -430,7 +427,7 @@ export default function AdminPage() {
 											min="0"
 											value={formData.amount}
 											onChange={handleChange}
-											className="w-full pl-10 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+											className="w-full pl-10 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
 											placeholder="0.00"
 										/>
 									</div>
@@ -444,7 +441,7 @@ export default function AdminPage() {
 										value={formData.description}
 										onChange={handleChange}
 										rows={3}
-										className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
+										className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all resize-none"
 										placeholder="Description de la transaction..."
 									/>
 								</div>
@@ -452,7 +449,7 @@ export default function AdminPage() {
 								<button
 									type="submit"
 									disabled={submitting}
-									className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:from-purple-500 hover:to-pink-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/25"
+									className="w-full py-4 bg-gradient-to-r from-cyan-600 to-sky-600 text-white rounded-xl font-semibold hover:from-cyan-500 hover:to-sky-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/25"
 								>
 									{submitting ? (
 										<span className="flex items-center justify-center gap-2">
@@ -496,7 +493,7 @@ export default function AdminPage() {
 											min="0"
 											value={expenseForm.amount}
 											onChange={handleExpenseChange}
-											className="w-full pl-10 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+											className="w-full pl-10 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
 											placeholder="0.00"
 										/>
 									</div>
@@ -510,7 +507,7 @@ export default function AdminPage() {
 										value={expenseForm.description}
 										onChange={handleExpenseChange}
 										rows={3}
-										className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
+										className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all resize-none"
 										placeholder="Description de la dépense..."
 									/>
 								</div>

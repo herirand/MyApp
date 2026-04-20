@@ -119,7 +119,7 @@ export default function StudentManagePage() {
 		return (
 			<div className="flex items-center justify-center">
 				<div className="text-white flex flex-col items-center gap-4">
-					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+					<div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 					<p>Chargement...</p>
 				</div>
 			</div>
@@ -174,7 +174,7 @@ export default function StudentManagePage() {
 							required
 							value={formData.username}
 							onChange={handleChange}
-							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
 							placeholder="Nom d&apos;utilisateur"
 						/>
 					</div>
@@ -189,7 +189,7 @@ export default function StudentManagePage() {
 							step="1"
 							value={formData.userId}
 							onChange={handleChange}
-							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
 							placeholder="Ex: 12345"
 						/>
 					</div>
@@ -202,7 +202,7 @@ export default function StudentManagePage() {
 							required
 							value={formData.email}
 							onChange={handleChange}
-							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+							className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
 							placeholder="email@exemple.com"
 						/>
 					</div>
@@ -216,7 +216,7 @@ export default function StudentManagePage() {
 								minLength={6}
 								value={formData.password}
 								onChange={handleChange}
-								className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+								className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
 								placeholder="••••••••"
 							/>
 						</div>
@@ -224,7 +224,7 @@ export default function StudentManagePage() {
 						<button
 							type="submit"
 							disabled={submitting}
-							className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:from-purple-500 hover:to-pink-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/25"
+							className="w-full py-4 bg-gradient-to-r from-cyan-600 to-sky-600 text-white rounded-xl font-semibold hover:from-cyan-500 hover:to-sky-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/25"
 						>
 							{submitting ? 'Création...' : 'Ajouter l\'étudiant'}
 						</button>
@@ -243,7 +243,7 @@ export default function StudentManagePage() {
 							{students.map((student) => (
 								<div key={student.id} className="p-4 bg-white/5 rounded-xl flex items-center justify-between">
 									<div className="flex items-center gap-4">
-										<div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
+									<div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
 											<span className="text-white font-medium">{student.username[0].toUpperCase()}</span>
 										</div>
 										<div>

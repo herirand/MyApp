@@ -123,9 +123,9 @@ export default function AdminBeneficePage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+			<div className="min-h-screen flex items-center justify-center app-shell-bg">
 				<div className="text-white flex flex-col items-center gap-4">
-					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+					<div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 					<p>Chargement...</p>
 				</div>
 			</div>
@@ -133,11 +133,8 @@ export default function AdminBeneficePage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 relative">
-			<div className="absolute inset-0 -z-10" style={{
-				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
-				backgroundSize: '40px 40px',
-			}} />
+		<div className="min-h-screen app-shell-bg p-6 relative">
+			<div className="absolute inset-0 -z-10 app-shell-grid" />
 
 			<div className="relative max-w-6xl mx-auto">
 				<header className="mb-8 animate-fadeIn">

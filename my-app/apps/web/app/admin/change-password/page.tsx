@@ -116,7 +116,7 @@ export default function ChangePasswordPage() {
 		return (
 			<div className="flex items-center justify-center">
 				<div className="text-white flex flex-col items-center gap-4">
-					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+					<div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 					<p>Chargement...</p>
 				</div>
 			</div>
@@ -172,7 +172,7 @@ export default function ChangePasswordPage() {
 									required
 									value={formData.currentPassword}
 									onChange={handleChange}
-									className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all pr-12"
+									className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all pr-12"
 									placeholder="Entrez votre mot de passe actuel"
 								/>
 								<button
@@ -205,7 +205,7 @@ export default function ChangePasswordPage() {
 									minLength={8}
 									value={formData.newPassword}
 									onChange={handleChange}
-									className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all pr-12"
+									className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all pr-12"
 									placeholder="Minimum 8 caractères"
 								/>
 								<button
@@ -239,7 +239,7 @@ export default function ChangePasswordPage() {
 									minLength={8}
 									value={formData.confirmPassword}
 									onChange={handleChange}
-									className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all pr-12"
+									className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all pr-12"
 									placeholder="Confirmez le nouveau mot de passe"
 								/>
 								<button
@@ -274,7 +274,7 @@ export default function ChangePasswordPage() {
 						<button
 							type="submit"
 							disabled={submitting}
-							className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:from-purple-500 hover:to-pink-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/25"
+							className="w-full py-4 bg-gradient-to-r from-cyan-600 to-sky-600 text-white rounded-xl font-semibold hover:from-cyan-500 hover:to-sky-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/25"
 						>
 							{submitting ? 'Changement en cours...' : 'Changer mon mot de passe'}
 						</button>

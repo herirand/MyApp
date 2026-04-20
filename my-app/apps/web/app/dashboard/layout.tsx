@@ -14,11 +14,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-3 md:p-6 relative">
-			<div className="absolute inset-0 -z-10" style={{
-				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
-				backgroundSize: '40px 40px',
-			}} />
+		<div className="min-h-screen app-shell-bg p-3 md:p-6 relative">
+			<div className="absolute inset-0 -z-10 app-shell-grid" />
 			
 			<div className="relative max-w-7xl mx-auto">
 				<header className="flex justify-between items-center mb-6 md:mb-8">

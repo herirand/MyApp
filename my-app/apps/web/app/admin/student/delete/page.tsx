@@ -131,7 +131,7 @@ export default function DeleteStudentPage() {
 		return (
 			<div className="flex items-center justify-center">
 				<div className="text-white flex flex-col items-center gap-4">
-					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+					<div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 					<p>Chargement...</p>
 				</div>
 			</div>
@@ -178,7 +178,7 @@ export default function DeleteStudentPage() {
 									}`}
 								>
 									<div className="flex items-center gap-4 text-left">
-										<div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
+									<div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
 											<span className="text-white font-medium">{student.username[0].toUpperCase()}</span>
 										</div>
 										<div>
@@ -264,7 +264,7 @@ export default function DeleteStudentPage() {
 								type="button"
 								onClick={() => setShowConfirmModal(true)}
 								disabled={deleting}
-								className="w-full py-4 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl font-semibold hover:from-red-500 hover:to-pink-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-red-500/25"
+							className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl font-semibold hover:from-red-500 hover:to-orange-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-red-500/25"
 							>
 								{deleting ? 'Suppression...' : 'Supprimer cet étudiant'}
 							</button>
@@ -309,7 +309,7 @@ export default function DeleteStudentPage() {
 							<button
 								onClick={handleDelete}
 								disabled={deleting}
-								className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+							className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								{deleting ? 'Suppression...' : 'Confirmer la suppression'}
 							</button>

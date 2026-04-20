@@ -74,7 +74,7 @@ export default function StudentListPage() {
 		return (
 			<div className="flex items-center justify-center">
 				<div className="text-white flex flex-col items-center gap-4">
-					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+					<div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 					<p>Chargement...</p>
 				</div>
 			</div>
@@ -112,7 +112,7 @@ export default function StudentListPage() {
 							{students.map((student) => (
 								<div key={student.id} className="p-4 bg-white/5 rounded-xl flex items-center justify-between">
 									<div className="flex items-center gap-4">
-										<div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center">
+									<div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
 											<span className="text-white font-medium">{student.username[0].toUpperCase()}</span>
 										</div>
 										<div>

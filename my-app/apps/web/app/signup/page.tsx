@@ -139,16 +139,13 @@ export default function SignupPage() {
 	];
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden py-4 px-4 sm:py-8">
-			<div className="absolute inset-0" style={{
-				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)`,
-				backgroundSize: '30px 30px',
-			}} />
+		<div className="min-h-screen flex items-center justify-center app-shell-bg relative overflow-hidden py-4 px-3 sm:px-4 sm:py-8">
+			<div className="absolute inset-0 app-shell-grid" />
 
-			<div className="hidden sm:block absolute top-20 right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl" />
-			<div className="hidden sm:block absolute bottom-20 left-20 w-96 bg-indigo-500/20 rounded-full blur-3xl" />
+			<div className="hidden md:block absolute top-20 right-20 w-72 h-72 bg-cyan-500/20 rounded-full blur-3xl" />
+			<div className="hidden md:block absolute bottom-20 left-20 w-96 bg-emerald-500/20 rounded-full blur-3xl" />
 
-			<div className="relative z-10 w-full max-w-md px-0 sm:px-4">
+			<div className="relative z-10 w-full max-w-md px-1 sm:px-4">
 				<div className="animate-fadeIn">
 					<Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 md:mb-8 justify-center text-sm md:text-base">
 						<svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,9 +155,9 @@ export default function SignupPage() {
 					</Link>
 				</div>
 
-				<div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl animate-fadeIn stagger-1">
+				<div className="auth-card backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl animate-fadeIn stagger-1">
 					<div className="text-center mb-6 sm:mb-8">
-						<div className="w-14 sm:w-16 h-14 sm:h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+						<div className="w-14 sm:w-16 h-14 sm:h-16 bg-gradient-to-br from-cyan-500 to-sky-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
 							<svg className="w-7 sm:w-8 h-7 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
 							</svg>
@@ -193,7 +190,7 @@ export default function SignupPage() {
 								<label className="block text-sm font-medium text-gray-300">{field.label}</label>
 								<div className={`relative transition-all duration-300 ${focused === field.name ? 'transform scale-[1.01]' : ''}`}>
 									<div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-										<svg className={`w-5 h-5 transition-colors ${focused === field.name ? 'text-pink-400' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<svg className={`w-5 h-5 transition-colors ${focused === field.name ? 'text-cyan-300' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={field.icon} />
 										</svg>
 									</div>
@@ -208,7 +205,7 @@ export default function SignupPage() {
 										className={`w-full pl-12 pr-12 py-4 bg-white/5 border rounded-xl text-white placeholder-gray-500 focus:outline-none transition-all ${
 											errors[field.name as keyof ValidationErrors] 
 												? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20' 
-												: 'border-white/10 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20'
+											: 'border-white/10 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20'
 										}`}
 										placeholder={field.placeholder}
 									/>
@@ -245,7 +242,7 @@ export default function SignupPage() {
 						<button 
 							type="submit" 
 							disabled={loading}
-							className="w-full py-4 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-xl font-semibold hover:from-pink-500 hover:to-purple-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/25 mt-2"
+							className="w-full py-4 bg-gradient-to-r from-cyan-600 to-sky-600 text-white rounded-xl font-semibold hover:from-cyan-500 hover:to-sky-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/25 mt-2"
 						>
 							{loading ? (
 								<span className="flex items-center justify-center gap-2">
@@ -261,7 +258,7 @@ export default function SignupPage() {
 
 					<p className="text-center mt-6 text-gray-400">
 						Déjà un compte ?{' '}
-						<Link href="/login" className="text-pink-400 hover:text-pink-300 font-medium transition-colors hover:underline">
+						<Link href="/login" className="text-cyan-300 hover:text-cyan-200 font-medium transition-colors hover:underline">
 							Se connecter
 						</Link>
 					</p>

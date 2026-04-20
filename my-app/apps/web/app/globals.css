@@ -3,8 +3,13 @@
 :root {
   --background: #f8fafc;
   --foreground: #1e293b;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
+  --primary: #0ea5e9;
+  --primary-hover: #0284c7;
+  --surface-dark: rgba(15, 23, 42, 0.62);
+  --surface-border: rgba(226, 232, 240, 0.16);
+  --shell-start: #0b1220;
+  --shell-mid: #102339;
+  --shell-end: #0e2a33;
 }
 
 @theme inline {
@@ -19,7 +24,21 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'Avenir Next', 'Nunito Sans', 'Segoe UI', sans-serif;
+}
+
+.app-shell-bg {
+  background: linear-gradient(155deg, var(--shell-start) 0%, var(--shell-mid) 48%, var(--shell-end) 100%);
+}
+
+.app-shell-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.13) 1px, transparent 0);
+  background-size: 38px 38px;
+}
+
+.auth-card {
+  background: var(--surface-dark);
+  border: 1px solid var(--surface-border);
 }
 
 @keyframes fadeIn {
@@ -65,7 +84,7 @@ body {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px -8px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 12px 24px -8px rgba(14, 165, 233, 0.22);
 }
 
 .input-focus {
@@ -73,17 +92,17 @@ body {
 }
 
 .input-focus:focus {
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 8px 20px -4px rgba(14, 165, 233, 0.36);
 }
 
 .btn-primary:active {

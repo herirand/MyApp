@@ -269,9 +269,9 @@ export default function DashboardPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-				<div className="text-white flex flex-col items-center gap-4">
-					<div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+			<div className="min-h-screen flex items-center justify-center app-shell-bg">
+					<div className="text-white flex flex-col items-center gap-4">
+						<div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
 					<p>Chargement...</p>
 				</div>
 			</div>
@@ -279,34 +279,31 @@ export default function DashboardPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 relative">
-			<div className="absolute inset-0 -z-10" style={{
-				backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)`,
-				backgroundSize: '40px 40px',
-			}} />
+		<div className="min-h-screen app-shell-bg p-3 md:p-6 relative">
+			<div className="absolute inset-0 -z-10 app-shell-grid" />
 
 			<div className="relative max-w-6xl mx-auto">
-			<header className="flex justify-between items-center mb-8 animate-fadeIn">
+			<header className="flex justify-between items-start sm:items-center gap-3 mb-6 md:mb-8 animate-fadeIn">
 				<div>
-					<h1 className="text-3xl font-bold text-white">Tableau de bord</h1>
-					<p className="text-gray-400 mt-1">Gérez vos transactions et dépenses</p>
+					<h1 className="text-2xl md:text-3xl font-bold text-white">Tableau de bord</h1>
+					<p className="text-gray-400 mt-1 text-sm md:text-base">Gérez vos transactions et dépenses</p>
 				</div>
-				<div className="flex items-center gap-3">
+				<div className="flex items-center gap-2 sm:gap-3">
 					<button
 						onClick={() => router.push('/dashboard/change-password')}
-						className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all text-white hover:scale-105"
+						className="p-2.5 sm:p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all text-white hover:scale-105"
 						title="Changer le mot de passe"
 					>
-						<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
 						</svg>
 					</button>
 					<button
 						onClick={handleRefresh}
 						disabled={refreshing}
-						className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all text-white hover:scale-105"
+						className="p-2.5 sm:p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all text-white hover:scale-105"
 					>
-						<svg className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg className={`w-4 h-4 sm:w-5 sm:h-5 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 						</svg>
 					</button>
@@ -336,7 +333,7 @@ export default function DashboardPage() {
 						<p className="text-emerald-400/70 text-sm mt-1">Votre solde personnel</p>
 					</div>
 
-					<div className="bg-gradient-to-br from-red-500/20 to-pink-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-4 md:p-6 card-hover animate-fadeIn stagger-2">
+					<div className="bg-gradient-to-br from-red-500/20 to-orange-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-4 md:p-6 card-hover animate-fadeIn stagger-2">
 						<div className="flex items-center gap-3 mb-2">
 							<div className="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
 								<svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -349,17 +346,17 @@ export default function DashboardPage() {
 						<p className="text-red-400/70 text-sm mt-1">Dépenses globales de l&apos;admin</p>
 					</div>
 
-					<div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/10 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-4 md:p-6 card-hover animate-fadeIn stagger-3">
+					<div className="bg-gradient-to-br from-sky-500/20 to-cyan-500/10 backdrop-blur-xl border border-sky-500/20 rounded-2xl p-4 md:p-6 card-hover animate-fadeIn stagger-3">
 						<div className="flex items-center gap-3 mb-2">
-							<div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
-								<svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<div className="w-10 h-10 bg-sky-500/20 rounded-xl flex items-center justify-center">
+								<svg className="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
 								</svg>
 							</div>
-							<span className="text-purple-400 text-sm font-medium">Solde Global</span>
+							<span className="text-sky-400 text-sm font-medium">Solde Global</span>
 						</div>
 						<p className="text-xl md:text-3xl font-bold text-white">{globalTotal.toFixed(2)} (Ar)</p>
-						<p className="text-purple-400/70 text-sm mt-1">Total de la communauté</p>
+						<p className="text-sky-400/70 text-sm mt-1">Total de la communauté</p>
 					</div>
 				</div>
 
@@ -379,7 +376,7 @@ export default function DashboardPage() {
 								<span className="hidden md:inline ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{transactions.length}</span>
 							</span>
 							{activeTab === 'transactions' && (
-								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-sky-500" />
 							)}
 						</button>
 						<button
@@ -396,7 +393,7 @@ export default function DashboardPage() {
 								<span className="hidden md:inline ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{expenses.length}</span>
 							</span>
 							{activeTab === 'expenses' && (
-								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-sky-500" />
 							)}
 						</button>
 						<button
@@ -413,7 +410,7 @@ export default function DashboardPage() {
 								<span className="hidden md:inline ml-1 px-2 py-0.5 bg-white/10 rounded-full text-xs">{benefices.length}</span>
 							</span>
 							{activeTab === 'benefices' && (
-								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+								<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-sky-500" />
 							)}
 						</button>
 					</div>
