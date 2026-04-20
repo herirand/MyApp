@@ -332,7 +332,7 @@ export default function DashboardPage() {
 							</div>
 							<span className="text-emerald-400 text-sm font-medium">Solde Utilisateur</span>
 						</div>
-						<p className="text-xl md:text-3xl font-bold text-white">{userBalance.toFixed(2)} €</p>
+						<p className="text-xl md:text-3xl font-bold text-white">{userBalance.toFixed(2)} (Ar)</p>
 						<p className="text-emerald-400/70 text-sm mt-1">Votre solde personnel</p>
 					</div>
 
@@ -345,7 +345,7 @@ export default function DashboardPage() {
 							</div>
 							<span className="text-red-400 text-sm font-medium">Dépenses Totales</span>
 						</div>
-						<p className="text-xl md:text-3xl font-bold text-white">{totalSpent.toFixed(2)} €</p>
+						<p className="text-xl md:text-3xl font-bold text-white">{totalSpent.toFixed(2)} (Ar)</p>
 						<p className="text-red-400/70 text-sm mt-1">Dépenses globales de l&apos;admin</p>
 					</div>
 
@@ -358,7 +358,7 @@ export default function DashboardPage() {
 							</div>
 							<span className="text-purple-400 text-sm font-medium">Solde Global</span>
 						</div>
-						<p className="text-xl md:text-3xl font-bold text-white">{globalTotal.toFixed(2)} €</p>
+						<p className="text-xl md:text-3xl font-bold text-white">{globalTotal.toFixed(2)} (Ar)</p>
 						<p className="text-purple-400/70 text-sm mt-1">Total de la communauté</p>
 					</div>
 				</div>
@@ -457,7 +457,7 @@ export default function DashboardPage() {
 												</div>
 											</div>
 											<div className="text-right md:text-right">
-												<p className="text-white font-bold text-lg">+{t.amount.toFixed(2)} €</p>
+											<p className="text-white font-bold text-lg">+{t.amount.toFixed(2)} (Ar)</p>
 												<span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(t.status)}`}>
 													{t.status}
 												</span>
@@ -499,7 +499,7 @@ export default function DashboardPage() {
 												</div>
 											</div>
 											<div className="text-right">
-												<p className="text-red-400 font-bold text-lg">-{e.amount.toFixed(2)} €</p>
+											<p className="text-red-400 font-bold text-lg">-{e.amount.toFixed(2)} (Ar)</p>
 											</div>
 										</div>
 									))}
@@ -538,7 +538,7 @@ export default function DashboardPage() {
 												</div>
 											</div>
 											<div className="text-right">
-												<p className="text-emerald-400 font-bold text-lg">+{b.amount.toFixed(2)} €</p>
+											<p className="text-emerald-400 font-bold text-lg">+{b.amount.toFixed(2)} (Ar)</p>
 											</div>
 										</div>
 									))}

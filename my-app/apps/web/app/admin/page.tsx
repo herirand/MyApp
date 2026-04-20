@@ -419,9 +419,9 @@ export default function AdminPage() {
 								</div>
 
 								<div className="space-y-2">
-									<label className="block text-sm font-medium text-gray-300">Montant (€)</label>
+									<label className="block text-sm font-medium text-gray-300">Montant (Ar)</label>
 									<div className="relative">
-										<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+										<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Ar</span>
 										<input
 											type="number"
 											name="amount"
@@ -485,9 +485,9 @@ export default function AdminPage() {
 								)}
 
 								<div className="space-y-2">
-									<label className="block text-sm font-medium text-gray-300">Montant (€)</label>
+									<label className="block text-sm font-medium text-gray-300">Montant (Ar)</label>
 									<div className="relative">
-										<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+										<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Ar</span>
 										<input
 											type="number"
 											name="amount"
@@ -551,9 +551,9 @@ export default function AdminPage() {
 								)}
 
 								<div className="space-y-2">
-									<label className="block text-sm font-medium text-gray-300">Montant (€)</label>
+									<label className="block text-sm font-medium text-gray-300">Montant (Ar)</label>
 									<div className="relative">
-										<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+										<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Ar</span>
 										<input
 											type="number"
 											name="amount"

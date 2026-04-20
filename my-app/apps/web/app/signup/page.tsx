@@ -33,6 +33,7 @@ export default function SignupPage() {
 	const [loading, setLoading] = useState(false);
 	const [focused, setFocused] = useState<string | null>(null);
 	const [showPassword, setShowPassword] = useState(false);
+	const [successMessage, setSuccessMessage] = useState('');
 
 	const validateField = (name: string, value: string): string | undefined => {
 		switch (name) {
@@ -77,6 +78,7 @@ export default function SignupPage() {
 
 	const handleSignup = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setSuccessMessage('');
 		
 		const newErrors: ValidationErrors = {};
 		let hasErrors = false;
@@ -115,8 +117,11 @@ export default function SignupPage() {
 				throw new Error(data.error || 'Erreur lors de la création du compte');
 			}
 
-			alert('Compte créé avec succès ! Connectez-vous.');
-			router.push('/login');
+			setErrors({});
+			setSuccessMessage('Compte cree avec succes ! Redirection vers la connexion...');
+			setTimeout(() => {
+				router.push('/login');
+			}, 1200);
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la création du compte';
 			setErrors({ ...errors, submit: errorMessage });
@@ -165,6 +170,15 @@ export default function SignupPage() {
 					</div>
 
 					<form onSubmit={handleSignup} className="space-y-3 sm:space-y-4">
+						{successMessage && (
+							<div className="p-3 sm:p-4 bg-emerald-500/20 border border-emerald-500/50 text-emerald-200 rounded-lg sm:rounded-xl text-xs sm:text-sm flex items-center gap-3">
+								<svg className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+								</svg>
+								{successMessage}
+							</div>
+						)}
+
 						{errors.submit && (
 							<div className="p-3 sm:p-4 bg-red-500/20 border border-red-500/50 text-red-200 rounded-lg sm:rounded-xl text-xs sm:text-sm flex items-center gap-3">
 								<svg className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

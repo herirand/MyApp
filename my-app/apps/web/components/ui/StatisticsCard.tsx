@@ -98,10 +98,10 @@ export function StatisticsCard() {
 	}
 
 	const formatCurrency = (value: number) => {
-		return new Intl.NumberFormat('fr-FR', {
-			style: 'currency',
-			currency: 'EUR'
-		}).format(value);
+		return `${new Intl.NumberFormat('fr-FR', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		}).format(value)} (Ar)`;
 	};
 
 	return (

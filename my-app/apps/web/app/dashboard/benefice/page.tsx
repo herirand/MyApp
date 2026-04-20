@@ -135,7 +135,7 @@ export default function BeneficePage() {
 						</div>
 						<span className="text-emerald-400 text-xs md:text-sm font-medium">Total des bénéfices</span>
 					</div>
-					<p className="text-2xl md:text-4xl font-bold text-white">{totalBenefice.toFixed(2)} €</p>
+					<p className="text-2xl md:text-4xl font-bold text-white">{totalBenefice.toFixed(2)} (Ar)</p>
 					<p className="text-emerald-400/70 text-xs md:text-sm mt-1">{benefices.length} transactions</p>
 				</div>
 
@@ -171,7 +171,7 @@ export default function BeneficePage() {
 											</div>
 										</div>
 										<div className="text-right">
-											<p className="text-emerald-400 font-bold text-lg">+{b.amount.toFixed(2)} €</p>
+											<p className="text-emerald-400 font-bold text-lg">+{b.amount.toFixed(2)} (Ar)</p>
 										</div>
 									</div>
 								))}

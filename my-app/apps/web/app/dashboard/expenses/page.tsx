@@ -135,7 +135,7 @@ export default function DashboardExpensesPage() {
 						</div>
 						<span className="text-red-400 text-xs md:text-sm font-medium">Total des dépenses</span>
 					</div>
-					<p className="text-2xl md:text-4xl font-bold text-white">{totalExpenses.toFixed(2)} €</p>
+					<p className="text-2xl md:text-4xl font-bold text-white">{totalExpenses.toFixed(2)} (Ar)</p>
 					<p className="text-red-400/70 text-xs md:text-sm mt-1">{expenses.length} dépenses</p>
 				</div>
 
@@ -171,7 +171,7 @@ export default function DashboardExpensesPage() {
 											</div>
 										</div>
 										<div className="text-right">
-											<p className="text-red-400 font-bold text-lg">-{e.amount.toFixed(2)} €</p>
+											<p className="text-red-400 font-bold text-lg">-{e.amount.toFixed(2)} (Ar)</p>
 										</div>
 									</div>
 								))}

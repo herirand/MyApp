@@ -196,9 +196,9 @@ export default function AdminExpensesPage() {
 							)}
 
 							<div className="space-y-2">
-								<label className="block text-sm font-medium text-gray-300">Montant (€)</label>
+							<label className="block text-sm font-medium text-gray-300">Montant (Ar)</label>
 								<div className="relative">
-									<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+								<span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Ar</span>
 									<input
 										type="number"
 										name="amount"
@@ -254,7 +254,7 @@ export default function AdminExpensesPage() {
 								</div>
 								<span className="text-red-400 text-sm font-medium">Total des dépenses</span>
 							</div>
-							<p className="text-3xl font-bold text-white">{totalExpenses.toFixed(2)} €</p>
+							<p className="text-3xl font-bold text-white">{totalExpenses.toFixed(2)} (Ar)</p>
 							<p className="text-red-400/70 text-sm mt-1">{expenses.length} dépenses</p>
 						</div>
 
@@ -277,7 +277,7 @@ export default function AdminExpensesPage() {
 											<p className="text-gray-500 text-sm">{formatDate(e.createdAt)}</p>
 										</div>
 									</div>
-									<p className="text-red-400 font-bold">-{e.amount.toFixed(2)} €</p>
+									<p className="text-red-400 font-bold">-{e.amount.toFixed(2)} (Ar)</p>
 								</div>
 							))
 						)}

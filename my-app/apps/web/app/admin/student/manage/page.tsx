@@ -252,7 +252,7 @@ export default function StudentManagePage() {
 										</div>
 									</div>
 									{student.balance !== undefined && (
-										<span className="text-emerald-400 font-medium">{student.balance.toFixed(2)} €</span>
+										<span className="text-emerald-400 font-medium">{student.balance.toFixed(2)} (Ar)</span>
 									)}
 								</div>
 							))}
