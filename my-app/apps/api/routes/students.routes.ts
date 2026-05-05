@@ -7,7 +7,7 @@ import { authenticate } from "../middlwares/auth.middleware";
 import expenseMeService from "../services/expenseMe.service";
 import payService from "../services/pay.service";
 import beneficeMeService from "../services/beneficeMe.service";
-import { newPasswordDto } from "../dto/signup.dto";
+import { newPasswordDto } from "../dto/password.dto";
 import newPasswordService from "../services/newPassword.service";
 import spentService from "../services/spent.service";
 import studentPayService from "../services/studentPay.service";
