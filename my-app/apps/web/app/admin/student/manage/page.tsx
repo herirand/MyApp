@@ -25,10 +25,12 @@ export default function StudentManagePage() {
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
+	const [page, setPage] = useState(1);
+	const limit = 50;
 
-	async function fetchStudents(token: string) {
+	async function fetchStudents(token: string, currentPage: number) {
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student?page=${currentPage}&limit=${limit}`, {
 				method: 'GET',
 				headers: {
 					'Authorization': `Bearer ${token}`
@@ -60,9 +62,9 @@ export default function StudentManagePage() {
 		}
 
 		setTimeout(() => {
-			void fetchStudents(storedToken);
+			void fetchStudents(storedToken, page);
 		}, 0);
-	}, [router]);
+	}, [router, page]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -97,7 +99,7 @@ export default function StudentManagePage() {
 			setSuccess('Étudiant créé avec succès !');
 			setFormData({ username: '', email: '', password: '', userId: '' });
 			if (token) {
-				fetchStudents(token);
+				fetchStudents(token, page);
 			}
 		} catch (err: unknown) {
 			const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
@@ -256,6 +258,29 @@ export default function StudentManagePage() {
 									)}
 								</div>
 							))}
+						</div>
+					)}
+					
+					{/* Pagination Controls */}
+					{(!loading && (students.length > 0 || page > 1)) && (
+						<div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
+							<button
+								onClick={() => setPage(p => Math.max(1, p - 1))}
+								disabled={page === 1}
+								className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							>
+								Précédent
+							</button>
+							<span className="text-gray-400 text-sm">
+								Page {page}
+							</span>
+							<button
+								onClick={() => setPage(p => p + 1)}
+								disabled={students.length < limit}
+								className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							>
+								Suivant
+							</button>
 						</div>
 					)}
 				</div>

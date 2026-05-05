@@ -26,10 +26,12 @@ export default function DeleteStudentPage() {
 	const [success, setSuccess] = useState('');
 	const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [page, setPage] = useState(1);
+	const limit = 50;
 
-	async function fetchStudents(token: string) {
+	async function fetchStudents(token: string, currentPage: number) {
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student?page=${currentPage}&limit=${limit}`, {
 				method: 'GET',
 				headers: {
 					'Authorization': `Bearer ${token}`
@@ -61,9 +63,9 @@ export default function DeleteStudentPage() {
 		}
 
 		setTimeout(() => {
-			void fetchStudents(storedToken);
+			void fetchStudents(storedToken, page);
 		}, 0);
-	}, [router]);
+	}, [router, page]);
 
 	const handleSelectStudent = (student: Student) => {
 		setFormData({
@@ -116,7 +118,7 @@ export default function DeleteStudentPage() {
 			// Refresh student list
 			setTimeout(() => {
 				if (token) {
-					fetchStudents(token);
+					fetchStudents(token, page);
 				}
 			}, 1500);
 		} catch (err: unknown) {
@@ -201,6 +203,29 @@ export default function DeleteStudentPage() {
 									</svg>
 								</button>
 							))}
+						</div>
+					)}
+					
+					{/* Pagination Controls */}
+					{(!loading && (students.length > 0 || page > 1)) && (
+						<div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
+							<button
+								onClick={() => setPage(p => Math.max(1, p - 1))}
+								disabled={page === 1}
+								className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							>
+								Précédent
+							</button>
+							<span className="text-gray-400 text-sm">
+								Page {page}
+							</span>
+							<button
+								onClick={() => setPage(p => p + 1)}
+								disabled={students.length < limit}
+								className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							>
+								Suivant
+							</button>
 						</div>
 					)}
 				</div>
