@@ -143,6 +143,12 @@ export default function LoginPage() {
 								</span>
 							) : 'Se connecter'}
 						</button>
+						
+						<div className="flex justify-between items-center text-sm sm:text-base mt-4">
+							<Link href="/forgot-password" className="text-gray-400 hover:text-sky-300 font-medium transition-colors hover:underline">
+								Mot de passe oublié ?
+							</Link>
+						</div>
 					</form>
 
 					<p className="text-center mt-4 sm:mt-6 text-gray-400 text-sm sm:text-base">
